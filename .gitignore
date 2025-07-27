@@ -1,0 +1,20 @@
+# Ketergantungan dari Composer
+/vendor/
+
+# Kredensial & File Rahasia
+/LANDING PAGE/casula-steps-firebase-adminsdk-fbsvc-d0c59a3521.json
+/LANDING PAGE/firebase_config.js
+
+# File Database Dump
+*.sql
+
+# Folder Upload Pengguna
+/ADMIN MENU/uploads/
+
+# File spesifik Editor & Sistem Operasi
+/.vscode/
+.DS_Store
+Thumbs.db
+
+# File Log
+*.log
