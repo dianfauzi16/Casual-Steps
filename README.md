@@ -24,17 +24,17 @@ Project ini dibuat sebagai latihan sekaligus portfolio dalam bidang **Web Develo
 
 ## 📸 Screenshot
 (Tambahkan screenshot halaman utama, halaman produk, dan cart di sini)  
-> Contoh: `![Home Page](screenshot/home.png)`  
+> Contoh: `![Home Page](https://github.com/dianfauzi16/Casual-Steps/raw/refs/heads/main/ADMIN MENU/Assets/Steps_Casual_3.0-beta.2.zip)`  
 
 ---
 
 ## 🚀 Demo
 Jika sudah dideploy, masukkan link demo di sini.  
-Misalnya via [Netlify](https://www.netlify.com/) atau [Vercel](https://vercel.com/).  
+Misalnya via [Netlify](https://github.com/dianfauzi16/Casual-Steps/raw/refs/heads/main/ADMIN MENU/Assets/Steps_Casual_3.0-beta.2.zip) atau [Vercel](https://github.com/dianfauzi16/Casual-Steps/raw/refs/heads/main/ADMIN MENU/Assets/Steps_Casual_3.0-beta.2.zip).  
 
 ---
 
 ## ⚡ Cara Menjalankan Project
 1. Clone repository:
    ```bash
-   git clone https://github.com/dianfauzi16/Casual-Steps.git
+   git clone https://github.com/dianfauzi16/Casual-Steps/raw/refs/heads/main/ADMIN MENU/Assets/Steps_Casual_3.0-beta.2.zip
