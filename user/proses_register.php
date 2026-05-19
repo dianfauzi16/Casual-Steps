@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../admin/db_connect.php'; // Sesuaikan path jika perlu
+require_once dirname(__DIR__) . '/admin/db_connect.php'; // Sesuaikan path jika perlu
 
 // Inisialisasi array untuk menyimpan error dan data form
 $errors = [];

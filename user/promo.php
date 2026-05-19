@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Sertakan file koneksi database
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 // Ambil pengaturan nama toko
 $nama_toko = function_exists('get_site_setting') ? (get_site_setting($conn, 'nama_toko') ?: "Casual Steps") : "Casual Steps";
@@ -182,14 +182,15 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                                     echo '<span class="badge sale-badge">SALE ' . htmlspecialchars($product['discount_percent']) . '%</span>';
 
                                     $image_name = htmlspecialchars($product['image'] ?? '');
-                                    $image_path = "../ADMIN MENU/uploads/produk/" . $image_name;
-                                    $placeholder_path = "../ADMIN MENU/placeholder_image.png";
+                                    $image_url = "../admin/uploads/produk/" . $image_name;
+                                    $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
+                                    $placeholder_url = "../admin/placeholder_image.png";
 
-                                    if (!empty($image_name) && file_exists($image_path)):
+                                    if (!empty($image_name) && file_exists($image_file)):
                                     ?>
-                                        <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
+                                        <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
                                     <?php else: ?>
-                                        <img src="<?php echo $placeholder_path; ?>" alt="Gambar tidak tersedia" class="card-img-top">
+                                        <img src="<?php echo $placeholder_url; ?>" alt="Gambar tidak tersedia" class="card-img-top">
                                     <?php endif; ?>
                                 </div>
                                 <div class="card-body d-flex flex-column">

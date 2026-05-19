@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 // Fungsi get_site_setting (pastikan sudah ada di db_connect.php atau di-include)
 if (!function_exists('get_site_setting')) {
@@ -319,14 +319,15 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                                             // --- AKHIR LOGIKA PROMO YANG DIPERBAIKI ---
 
                                             $image_name = htmlspecialchars($product['image'] ?? '');
-                                            $image_path_from_admin = "../ADMIN MENU/uploads/produk/" . $image_name;
-                                            $placeholder_path_from_admin = "../ADMIN MENU/placeholder_image.png";
+                                            $image_url = "../admin/uploads/produk/" . $image_name;
+                                            $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
+                                            $placeholder_url = "../admin/placeholder_image.png";
 
-                                            if (!empty($image_name) && file_exists($image_path_from_admin)):
+                                            if (!empty($image_name) && file_exists($image_file)):
                                             ?>
-                                                <img src="<?php echo $image_path_from_admin; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
+                                                <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
                                             <?php else: ?>
-                                                <img src="<?php echo $placeholder_path_from_admin; ?>" alt="Gambar tidak tersedia" class="card-img-top">
+                                                <img src="<?php echo $placeholder_url; ?>" alt="Gambar tidak tersedia" class="card-img-top">
                                             <?php endif; ?>
                                         </div>
 

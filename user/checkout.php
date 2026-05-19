@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $page_title = "Checkout";
 $keranjang_items_detail = [];
@@ -312,10 +312,11 @@ if ($checkout_mode === 'direct' && isset($_SESSION['direct_checkout_item']) && !
                                             <?php
                                             // Persiapkan path gambar
                                             $image_name = htmlspecialchars($item_value['image'] ?? '');
-                                            $image_path = "../ADMIN MENU/uploads/produk/" . $image_name;
-                                            $placeholder_path = "../ADMIN MENU/placeholder_image.png"; // Fallback jika gambar tidak ada
+                                            $image_url = "../admin/uploads/produk/" . $image_name;
+                                            $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
+                                            $placeholder_url = "../admin/placeholder_image.png";
                                             ?>
-                                            <img src="<?php echo (!empty($image_name) && file_exists($image_path)) ? $image_path : $placeholder_path; ?>"
+                                            <img src="<?php echo (!empty($image_name) && file_exists($image_file)) ? $image_url : $placeholder_url; ?>"
                                                 alt="<?php echo htmlspecialchars($item_value['name']); ?>"
                                                 class="checkout-summary-img me-3">
                                             <div>

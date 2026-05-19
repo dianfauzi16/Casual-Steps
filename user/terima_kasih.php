@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Sertakan koneksi database jika Anda ingin mengambil detail pesanan lagi,
 // namun untuk halaman terima kasih sederhana, ID pesanan dari session mungkin cukup.
- require_once __DIR__ . '/../admin/db_connect.php'; 
+ require_once dirname(__DIR__) . '/admin/db_connect.php'; 
 
 $page_title = "Pesanan Diterima";
 $id_order_sukses = null;

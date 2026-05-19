@@ -1,5 +1,5 @@
-<?php
-require_once __DIR__ . '/../vendor/autoload.php';
+﻿<?php
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once __DIR__ . '/db_connect.php';
 
 \Midtrans\Config::$isProduction = false;

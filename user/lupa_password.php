@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $page_title = "Lupa Password";
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 $nama_toko = function_exists('get_site_setting') ? (get_site_setting($conn, 'nama_toko') ?: "Casual Steps") : "Casual Steps";
 ?>
 <!DOCTYPE html>

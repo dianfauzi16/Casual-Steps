@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_loggedin']) || $_SESSION['user_loggedin'] !== true ||
 }
 
 // 2. Sertakan file koneksi database
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $page_title = "Detail Pesanan";
 $user_id = $_SESSION['user_id']; // ID pelanggan yang sedang login
@@ -238,14 +238,15 @@ if (isset($_GET['id_order']) && filter_var($_GET['id_order'], FILTER_VALIDATE_IN
                                             <td style="width: 70px;">
                                                 <?php
                                                 $image_name_item = htmlspecialchars($item['gambar_produk_terkini'] ?? '');
-                                                $image_path_item = "../admin/uploads/produk/" . $image_name_item;
-                                                $placeholder_path_item = "../admin/placeholder_image.png";
+                                                $image_url_item = "../admin/uploads/produk/" . $image_name_item;
+                                                $image_file_item = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_item;
+                                                $placeholder_url_item = "../admin/placeholder_image.png";
 
-                                                if (!empty($image_name_item) && file_exists($image_path_item)):
+                                                if (!empty($image_name_item) && file_exists($image_file_item)):
                                                 ?>
-                                                    <img src="<?php echo $image_path_item; ?>" alt="<?php echo htmlspecialchars($item['nama_produk_saat_pesan']); ?>" class="img-thumbnail">
+                                                    <img src="<?php echo $image_url_item; ?>" alt="<?php echo htmlspecialchars($item['nama_produk_saat_pesan']); ?>" class="img-thumbnail">
                                                 <?php else: ?>
-                                                    <img src="<?php echo $placeholder_path_item; ?>" alt="Gambar tidak tersedia" class="img-thumbnail">
+                                                    <img src="<?php echo $placeholder_url_item; ?>" alt="Gambar tidak tersedia" class="img-thumbnail">
                                                 <?php endif; ?>
                                             </td>
                                             <td><?php echo htmlspecialchars($item['nama_produk_saat_pesan']); ?></td>

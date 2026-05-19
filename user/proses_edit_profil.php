@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_loggedin']) || $_SESSION['user_loggedin'] !== true ||
 }
 
 // 2. Sertakan file koneksi database
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $user_id = $_SESSION['user_id'];
 $errors = []; // Untuk menyimpan pesan error validasi
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $profile_picture_db_path = null;
     // Handle file upload
     if (isset($profile_picture_file) && $profile_picture_file['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = __DIR__ . '/../admin/uploads/profile_pictures/';
+        $upload_dir = dirname(__DIR__) . '/admin/uploads/profile_pictures/';
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
@@ -124,8 +124,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->commit();
 
             // Hapus foto lama jika ada foto baru yang berhasil diupload dan disimpan
-            if ($profile_picture_db_path && $old_pic_path && file_exists(__DIR__ . '/../admin/' . $old_pic_path)) {
-                unlink(__DIR__ . '/../admin/' . $old_pic_path);
+            if ($profile_picture_db_path && $old_pic_path && file_exists(dirname(__DIR__) . '/admin/' . $old_pic_path)) {
+                unlink(dirname(__DIR__) . '/admin/' . $old_pic_path);
             }
 
             $_SESSION['profil_message'] = "Profil Anda berhasil diperbarui.";
@@ -138,8 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['profil_message_type'] = "danger";
 
             // Jika file sudah terupload tapi transaksi gagal, hapus file yang baru diupload
-            if ($profile_picture_db_path && file_exists(__DIR__ . '/../admin/' . $profile_picture_db_path)) {
-                unlink(__DIR__ . '/../admin/' . $profile_picture_db_path);
+            if ($profile_picture_db_path && file_exists(dirname(__DIR__) . '/admin/' . $profile_picture_db_path)) {
+                unlink(dirname(__DIR__) . '/admin/' . $profile_picture_db_path);
             }
         }
     } else {

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_loggedin']) || $_SESSION['user_loggedin'] !== true ||
 }
 
 // 2. Sertakan file koneksi database
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $user_id = $_SESSION['user_id'];
 $errors = [];

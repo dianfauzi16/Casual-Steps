@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // (Opsional) Sertakan koneksi DB jika Anda ingin melakukan pengecekan stok
- require_once __DIR__ . '/../admin/db_connect.php';
+ require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 // Pastikan ada parameter cart_item_key, kuantitas, dan session keranjang ada
 if ($_SERVER["REQUEST_METHOD"] == "POST" && 

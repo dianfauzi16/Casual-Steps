@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_produk'])) {
 
     if ($id_produk) {
         // (Sangat Penting) Lakukan pengecekan stok ke database di sini sebelum menambahkan ke keranjang
-        require_once __DIR__ . '/../admin/db_connect.php'; // Jika belum di-include
+        require_once dirname(__DIR__) . '/admin/db_connect.php'; // Jika belum di-include
         $sql_check_stock = "SELECT stock FROM product WHERE id = ?";
         if ($stmt_stock = $conn->prepare($sql_check_stock)) {
             $stmt_stock->bind_param("i", $id_produk);

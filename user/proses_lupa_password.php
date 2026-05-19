@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../admin/db_connect.php';
-require_once __DIR__ . '/../admin/PHPMailer/PHPMailer.php';
-require_once __DIR__ . '/../admin/PHPMailer/SMTP.php';
-require_once __DIR__ . '/../admin/PHPMailer/Exception.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/PHPMailer/PHPMailer.php';
+require_once dirname(__DIR__) . '/admin/PHPMailer/SMTP.php';
+require_once dirname(__DIR__) . '/admin/PHPMailer/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

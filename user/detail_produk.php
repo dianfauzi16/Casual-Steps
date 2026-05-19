@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $current_page_base = basename($_SERVER['PHP_SELF']); // Definisi $current_page_base
 
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 // Fungsi get_site_setting (pastikan ada di db_connect.php atau di-include terpisah)
 if (!function_exists('get_site_setting')) {
@@ -378,14 +378,15 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                         }
 
                         $image_name = htmlspecialchars($product_detail['image'] ?? '');
-                        $image_path_from_admin = "../admin/uploads/produk/" . $image_name;
-                        $placeholder_path_from_admin = "../admin/placeholder_image.png";
+                        $image_url = "../admin/uploads/produk/" . $image_name;
+                        $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
+                        $placeholder_url = "../admin/placeholder_image.png";
 
-                        if (!empty($image_name) && file_exists($image_path_from_admin)):
+                        if (!empty($image_name) && file_exists($image_file)):
                         ?>
-                            <img src="<?php echo $image_path_from_admin; ?>" alt="<?php echo htmlspecialchars($product_detail['name']); ?>" class="product-detail-img">
+                            <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product_detail['name']); ?>" class="product-detail-img">
                         <?php else: ?>
-                            <img src="<?php echo $placeholder_path_from_admin; ?>" alt="Gambar tidak tersedia" class="product-detail-img">
+                            <img src="<?php echo $placeholder_url; ?>" alt="Gambar tidak tersedia" class="product-detail-img">
                         <?php endif; ?>
                     </div>
                 </div>

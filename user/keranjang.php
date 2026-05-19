@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $page_title = "Keranjang Belanja Anda";
 $keranjang_items_detail = [];
@@ -171,14 +171,15 @@ if (isset($_SESSION['keranjang']) && !empty($_SESSION['keranjang'])) {
                                 <td style="width: 100px;">
                                     <?php
                                     $image_name_cart = htmlspecialchars($item['image'] ?? '');
-                                    $image_path_cart = "../admin/uploads/produk/" . $image_name_cart;
-                                    $placeholder_path_cart = "../admin/placeholder_image.png";
+                                    $image_url_cart = "../admin/uploads/produk/" . $image_name_cart;
+                                    $image_file_cart = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_cart;
+                                    $placeholder_url_cart = "../admin/placeholder_image.png";
 
-                                    if (!empty($image_name_cart) && file_exists($image_path_cart)):
+                                    if (!empty($image_name_cart) && file_exists($image_file_cart)):
                                     ?>
-                                        <img src="<?php echo $image_path_cart; ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="img-thumbnail cart-item-img">
+                                        <img src="<?php echo $image_url_cart; ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="img-thumbnail cart-item-img">
                                     <?php else: ?>
-                                        <img src="<?php echo $placeholder_path_cart; ?>" alt="Gambar tidak tersedia" class="img-thumbnail cart-item-img">
+                                        <img src="<?php echo $placeholder_url_cart; ?>" alt="Gambar tidak tersedia" class="img-thumbnail cart-item-img">
                                     <?php endif; ?>
                                 </td>
                                 <td>

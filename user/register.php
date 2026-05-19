@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,7 +10,7 @@ if (isset($_SESSION['user_id'])) { // Asumsi 'user_id' disimpan di session saat 
 }
 
 // Sertakan db_connect.php jika Anda perlu melakukan pengecekan dinamis sebelum form tampil (opsional)
-// require_once __DIR__ . '/../ADMIN MENU/db_connect.php';
+// require_once dirname(__DIR__) . '/ADMIN MENU/db_connect.php';
 $page_title = "Daftar Akun Baru";
 ?>
 <!DOCTYPE html>

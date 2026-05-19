@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Exception\Auth\IdTokenVerificationFailed; // Menggunakan Exception yang benar untuk v5+

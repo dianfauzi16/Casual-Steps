@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $token = trim($_POST['token'] ?? '');

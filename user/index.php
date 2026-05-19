@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 $nama_toko = function_exists('get_site_setting') ? (get_site_setting($conn, 'nama_toko') ?: "Casual Steps") : "Casual Steps";
 $email_kontak_toko = function_exists('get_site_setting') ? (get_site_setting($conn, 'email_kontak') ?: "kontak@example.com") : "kontak@example.com";
@@ -273,14 +273,15 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                     <div class="product-card card h-100 shadow-sm bg-dark border-secondary">
                       <?php
                       $image_name_best = htmlspecialchars($product['image'] ?? '');
-                      $image_path_best = "../admin/uploads/produk/" . $image_name_best;
-                      $placeholder_path_best = "../admin/placeholder_image.png";
+                      $image_url_best = "../admin/uploads/produk/" . $image_name_best;
+                      $image_file_best = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_best;
+                      $placeholder_url_best = "../admin/placeholder_image.png";
 
-                      if (!empty($image_name_best) && file_exists($image_path_best)):
+                      if (!empty($image_name_best) && file_exists($image_file_best)):
                       ?>
-                        <img src="<?php echo $image_path_best; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                        <img src="<?php echo $image_url_best; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                       <?php else: ?>
-                        <img src="<?php echo $placeholder_path_best; ?>" alt="Gambar tidak tersedia" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                        <img src="<?php echo $placeholder_url_best; ?>" alt="Gambar tidak tersedia" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                       <?php endif; ?>
 
                       <div class="card-body d-flex flex-column text-start p-3">
@@ -369,14 +370,15 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                 <div class="product-card card h-100 shadow-sm">
                   <?php
                   $image_name = htmlspecialchars($product['image'] ?? '');
-                  $image_path = "../admin/uploads/produk/" . $image_name;
-                  $placeholder_path = "../admin/placeholder_image.png"; // Pastikan placeholder ada
+                  $image_url = "../admin/uploads/produk/" . $image_name;
+                  $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
+                  $placeholder_url = "../admin/placeholder_image.png";
 
-                  if (!empty($image_name) && file_exists($image_path)):
+                  if (!empty($image_name) && file_exists($image_file)):
                   ?>
-                    <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                    <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                   <?php else: ?>
-                    <img src="<?php echo $placeholder_path; ?>" alt="Gambar tidak tersedia" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                    <img src="<?php echo $placeholder_url; ?>" alt="Gambar tidak tersedia" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                   <?php endif; ?>
 
                   <div class="card-body d-flex flex-column">

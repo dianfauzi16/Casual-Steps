@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Matikan pelaporan error ke output agar tidak merusak JSON
 error_reporting(0);
 
@@ -7,8 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Sertakan autoloader Composer
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 header('Content-Type: application/json');
 

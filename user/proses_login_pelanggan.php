@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,7 +7,7 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\Exception\Auth\IdTokenVerificationFailed; 
 
 // Sertakan file koneksi database (pastikan path ini benar)
-require_once __DIR__ . '/../admin/db_connect.php';
+require_once dirname(__DIR__) . '/admin/db_connect.php';
 
 // Jika pengguna sudah login, arahkan ke halaman utama
 if (isset($_SESSION['user_id'])) { // Anda bisa juga cek $_SESSION['user_loggedin']
