@@ -1,0 +1,6 @@
+{
+    "require": {
+        "midtrans/midtrans-php": "^2.6",
+        "kreait/firebase-php": "^5.26"
+    }
+}

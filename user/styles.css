@@ -1,0 +1,642 @@
+/* Global Styles */
+body {
+  font-family: "poppins", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+#about1 {
+  scroll-margin-top: 20vh;
+}
+
+#contact1 {
+  scroll-margin-top: 100px;
+}
+
+#product1 {
+  scroll-margin-top: 10vh;
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(5px);
+}
+.navbar-nav .nav-link.active {
+    font-weight: bold !important;
+}
+.social-connect-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px;
+  margin-top: 70px;
+  position: relative;
+  z-index: 1;
+}
+
+.social-connect-section h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  margin-bottom: 20px;
+  animation: fadeInDown 1s ease-out;
+}
+
+.social-connect-section .subtitle {
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+  margin-bottom: 50px;
+  animation: fadeInUp 1s ease-out 0.5s;
+  animation-fill-mode: backwards;
+}
+
+.social-links-container {
+  background-color: rgba(150, 146, 146, 0.35);
+  backdrop-filter: blur(10px);
+  width: 40%;
+  height: 40%;
+  display: flex;
+  padding: 20px;
+  margin-left: 30%;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.social-icon-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  font-size: 2.5rem;
+  color: #fff;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) backwards;
+  text-decoration: none;
+}
+
+.social-icon-link:nth-child(1) {
+  animation-delay: 0.8s;
+}
+
+.social-icon-link:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.social-icon-link:nth-child(3) {
+  animation-delay: 1.2s;
+}
+
+.social-icon-link:nth-child(4) {
+  animation-delay: 1.4s;
+}
+
+.social-icon-link:hover {
+  transform: translateY(-10px) scale(1.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.social-icon-link.instagram:hover {
+  background-color: #e1306c;
+  color: #fff;
+}
+
+.social-icon-link.facebook:hover {
+  background-color: #1877f2;
+  color: #fff;
+}
+
+.social-icon-link.tiktok:hover {
+  background-color: #000000;
+  color: #fff;
+}
+.social-icon-link.twitter:hover {
+  background-color: #1da1f2;
+  color: #fff;
+}
+
+.carousel-item {
+  height: 60vh;
+  min-height: 300px;
+  background: no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.carousel-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.carousel-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  bottom: 20%;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.brand-carousel {
+  display: flex;
+  width: max-content;
+  animation: scrollBrands 20s linear infinite;
+}
+
+.carousel-inner {
+  aspect-ratio: 2 / 1;
+  max-height: 60vh;
+  min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .carousel-item,
+  .carousel-inner {
+    height: 35vh;
+    min-height: 180px;
+    max-height: 40vh;
+    aspect-ratio: 1.2 / 1;
+  }
+  .carousel-caption {
+    font-size: 0.95rem;
+    padding-bottom: 1.5rem;
+  }
+  .carousel-caption h1,
+  .carousel-caption h2 {
+    font-size: 1.2rem;
+  }
+  .carousel-caption p {
+    font-size: 0.95rem;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+footer.bg-dark {
+  margin-top: auto;
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(5px);
+  position: relative;
+  z-index: 1;
+}
+
+/* Navigation */
+.navbar {
+  padding: 15px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  font-weight: 500;
+  margin: 0 15px;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #000;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.hero-section h1 {
+  line-height: 1.2;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}
+
+.about-hero {
+  background: url("../ADMIN MENU/Assets/ok.png") no-repeat center
+    center; /* Ganti dengan gambar hero yang lebih menarik jika ada */
+  background-size: cover;
+  height: 500px;
+  padding: 100px 0;
+  color: #fff;
+  text-align: center;
+  margin-top: 70px; /* Sesuaikan dengan tinggi navbar Anda */
+  position: relative;
+}
+.about-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Overlay gelap untuk keterbacaan teks */
+}
+.about-hero h1,
+.about-hero p {
+  position: relative; /* Agar teks di atas overlay */
+  z-index: 1;
+}
+.team-member img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+.icon-feature {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--bs-primary); /* Menggunakan variabel warna primary Bootstrap */
+}
+
+/* Brand Logos */
+.brand-logos {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.brand-logo {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo img {
+  max-height: 100%;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+}
+
+.brand-logo img:hover {
+  filter: grayscale(0%);
+}
+
+/* Features Section */
+.features-section {
+  background-color: #000;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.feature-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Best Shoes Section */
+.best-shoes-section {
+  background-color: #111;
+}
+
+.stars {
+  color: #ffc107;
+  font-size: 1.5rem;
+}
+
+/* Recommendation Section */
+.product-card {
+  transition: transform 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+}
+
+.product-card h5 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.brand-bar {
+  overflow: hidden;
+  background: #fff;
+  padding: 20px 0;
+}
+
+.hero-section h1 {
+  font-family: "Special Gothic Expanded One", system-ui;
+}
+
+.features-section h2 {
+  font-family: "Special Gothic Expanded One", system-ui;
+}
+
+.best-shoes-section h2 {
+  font-family: "Special Gothic Expanded One", system-ui;
+}
+.brand-logo {
+  flex: 0 0 auto;
+  width: 140px;
+  margin: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo img {
+  max-width: 100px;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+/* All Brands Section */
+.all-brands-section {
+  background-color: #ffffff;
+}
+
+.all-brands-section .display-5 {
+  font-family: "Special Gothic Expanded One", system-ui; /* Match other titles */
+}
+
+.brand-item-link {
+  text-decoration: none;
+  display: block;
+  height: 100%;
+}
+
+.brand-item-card {
+  border: 1px solid #e9ecef;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.brand-item-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.brand-item-card .card-body {
+  padding: 1.5rem;
+}
+
+.brand-item-card img {
+  max-height: 50px;
+  width: 100%;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.8;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.brand-item-card:hover img {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* --- Styles for Lupa Password Page (and potentially other form pages) --- */
+/* Body background with image and overlay */
+.form-page-bg {
+  background-image: url("sp1.png"); /* Ganti dengan URL gambar Anda atau biarkan random */
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed; /* Efek parallax */
+  position: relative; /* Diperlukan untuk overlay */
+}
+
+/* Overlay untuk keterbacaan teks di atas gambar latar */
+.form-page-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6); /* Overlay gelap */
+  z-index: -1; /* Di belakang konten */
+}
+
+.form-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-card-title {
+  font-weight: 700;
+  color: #1e293b; /* slate-800 */
+}
+
+/* Navbar adjustments for fixed position and background */
+header .navbar {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer adjustments for fixed position and background */
+footer.bg-dark {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(10px);
+}
+
+.form-page-bg footer {
+  background-color: transparent !important;
+  backdrop-filter: none;
+}
+@keyframes scrollBrands {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* About Section */
+.about-section {
+  background-color: #f8f9fa;
+}
+
+/* Contact Section */
+.contact-section {
+  background-color: #f0f0f0;
+}
+
+.contact-info i {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.contact-form {
+  background-color: #fff;
+}
+
+/* Footer */
+footer {
+  background-color: #000;
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  transition: opacity 0.3s;
+}
+
+.social-icons a:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 576px) {
+  .cart-item-img {
+    width: 48px;
+    height: 48px;
+  }
+  .table thead th,
+  .table td {
+    padding: 0.4rem 0.3rem;
+    font-size: 0.95rem;
+    vertical-align: middle;
+  }
+  .btn,
+  .form-control {
+    font-size: 0.95rem;
+  }
+  .table-responsive {
+    font-size: 0.97rem;
+  }
+  h1,
+  .h1 {
+    font-size: 1.5rem !important;
+    word-break: break-word;
+  }
+  main.container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  h1,
+  .h1 {
+    font-size: 1.3rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem;
+  }
+  main.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+    box-sizing: border-box;
+  }
+
+  .hero-section {
+    padding: 120px 0 60px;
+    text-align: center;
+  }
+
+  .hero-section img {
+    margin-top: 40px;
+  }
+
+  .feature-item {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .feature-item .d-flex {
+    flex-direction: column;
+  }
+
+  .feature-icon {
+    margin-bottom: 15px;
+  }
+
+  .feature-image-box {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 200px;
+  }
+
+  .feature-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .feature-images {
+    grid-template-columns: 1fr;
+    margin-bottom: 30px;
+  }
+}

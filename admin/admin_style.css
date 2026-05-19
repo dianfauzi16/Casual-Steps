@@ -1,0 +1,101 @@
+/* Global Admin Styles */
+body {
+    background-color: #f8f9fa; /* Light grey background */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Login Page Specific Styles */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+}
+.login-header {
+    background-color: #212529; /* Dark Header */
+    color: white;
+    padding: 2rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    text-align: center;
+}
+.login-header i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+.login-body {
+    padding: 2rem;
+}
+.btn-login {
+    background-color: #212529;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+}
+.btn-login:hover {
+    background-color: #343a40;
+    color: white;
+}
+
+
+/* Dashboard Styles */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #212529; /* Dark Sidebar */
+    color: white;
+    padding-top: 20px;
+    z-index: 1000;
+}
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #adb5bd; /* Light grey text */
+    display: block;
+    transition: all 0.2s;
+}
+.sidebar a:hover {
+    background-color: #343a40;
+    color: white;
+}
+.sidebar a.active {
+    background-color: #0d6efd; /* Bootstrap Primary Blue */
+    color: white;
+    font-weight: 600;
+}
+
+.main-content {
+    margin-left: 260px; /* Same as sidebar width */
+    padding: 30px;
+}
+
+.stat-card {
+    color: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+.stat-card h5 {
+    font-size: 1rem;
+    font-weight: 300;
+}
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 5px 0;
+}
+.stat-card p {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.8;
+}
