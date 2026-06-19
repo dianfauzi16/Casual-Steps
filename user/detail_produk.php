@@ -378,11 +378,12 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                         }
 
                         $image_name = htmlspecialchars($product_detail['image'] ?? '');
-                        $image_url = "../admin/uploads/produk/" . $image_name;
+                        $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
+                        $image_url = $is_url ? $image_name : "../admin/uploads/produk/" . $image_name;
                         $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
                         $placeholder_url = "../admin/placeholder_image.png";
 
-                        if (!empty($image_name) && file_exists($image_file)):
+                        if (!empty($image_name) && ($is_url || file_exists($image_file))):
                         ?>
                             <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product_detail['name']); ?>" class="product-detail-img">
                         <?php else: ?>

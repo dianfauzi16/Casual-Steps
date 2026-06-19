@@ -312,11 +312,12 @@ if ($checkout_mode === 'direct' && isset($_SESSION['direct_checkout_item']) && !
                                             <?php
                                             // Persiapkan path gambar
                                             $image_name = htmlspecialchars($item_value['image'] ?? '');
-                                            $image_url = "../admin/uploads/produk/" . $image_name;
+                                            $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
+                                            $image_url = $is_url ? $image_name : "../admin/uploads/produk/" . $image_name;
                                             $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
                                             $placeholder_url = "../admin/placeholder_image.png";
                                             ?>
-                                            <img src="<?php echo (!empty($image_name) && file_exists($image_file)) ? $image_url : $placeholder_url; ?>"
+                                            <img src="<?php echo (!empty($image_name) && ($is_url || file_exists($image_file))) ? $image_url : $placeholder_url; ?>"
                                                 alt="<?php echo htmlspecialchars($item_value['name']); ?>"
                                                 class="checkout-summary-img me-3">
                                             <div>

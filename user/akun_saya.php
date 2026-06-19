@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -181,8 +181,11 @@ if ($stmt = $conn->prepare($sql_get_user_info)) {
                             <!-- Tampilan Profil Picture (selalu tampil) -->
                             <div class="profile-picture-container mb-4">
                                 <?php
-                                $profile_pic_path = '../admin/' . ($user_data['profile_picture_url'] ?? 'placeholder_profile.png');
-                                if (empty($user_data['profile_picture_url']) || !file_exists($profile_pic_path)) {
+                                $profile_pic_name = $user_data['profile_picture_url'] ?? '';
+                                $is_url = filter_var($profile_pic_name, FILTER_VALIDATE_URL);
+                                $profile_pic_path = $is_url ? $profile_pic_name : '../admin/' . $profile_pic_name;
+                                
+                                if (empty($profile_pic_name) || (!$is_url && !file_exists($profile_pic_path))) {
                                     $profile_pic_path = 'https://via.placeholder.com/150/808080/FFFFFF?text=' . strtoupper(substr($user_data['name'], 0, 1));
                                 }
                                 ?>

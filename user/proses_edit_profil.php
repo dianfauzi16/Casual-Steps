@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -44,11 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $profile_picture_db_path = null;
     // Handle file upload
     if (isset($profile_picture_file) && $profile_picture_file['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = dirname(__DIR__) . '/admin/uploads/profile_pictures/';
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-
         $file_info = pathinfo($profile_picture_file['name']);
         $file_ext = strtolower($file_info['extension']);
         $allowed_exts = ['jpg', 'jpeg', 'png', 'gif'];
@@ -58,13 +53,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($profile_picture_file['size'] > 2097152) { // 2MB
             $errors[] = "Ukuran file foto profil tidak boleh lebih dari 2MB.";
         } else {
-            $new_filename = 'profile_' . $user_id . '_' . time() . '.' . $file_ext;
-            $destination = $upload_dir . $new_filename;
-            if (move_uploaded_file($profile_picture_file['tmp_name'], $destination)) {
-                $profile_picture_db_path = 'uploads/profile_pictures/' . $new_filename;
-            } else {
-                $errors[] = "Gagal mengunggah foto profil.";
+            // -- MULAI CLOUDINARY UPLOAD --
+            require_once dirname(__DIR__) . '/vendor/autoload.php';
+            
+            $cloudinaryUrl = getenv('CLOUDINARY_URL') ?: ($_ENV['CLOUDINARY_URL'] ?? ($_SERVER['CLOUDINARY_URL'] ?? null));
+            if (empty($cloudinaryUrl)) {
+                $envPath = dirname(__DIR__) . '/.env';
+                if (file_exists($envPath)) {
+                    $envLines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    foreach ($envLines as $line) {
+                        if (strpos(trim($line), 'CLOUDINARY_URL=') === 0) {
+                            $cloudinaryUrl = trim(str_replace('"', '', substr(trim($line), 15)));
+                            break;
+                        }
+                    }
+                }
             }
+            
+            if ($cloudinaryUrl) {
+                \Cloudinary\Configuration\Configuration::instance($cloudinaryUrl);
+                $uploadApi = new \Cloudinary\Api\Upload\UploadApi();
+                try {
+                    $uploadResult = $uploadApi->upload($profile_picture_file['tmp_name'], [
+                        'folder' => 'casual_steps_user_profiles'
+                    ]);
+                    $profile_picture_db_path = $uploadResult['secure_url']; // Simpan URL Cloudinary
+                } catch (Exception $e) {
+                    $errors[] = "Gagal mengunggah foto profil ke Cloudinary: " . $e->getMessage();
+                }
+            } else {
+                $errors[] = "Gagal mengunggah foto profil: CLOUDINARY_URL tidak dikonfigurasi.";
+            }
+            // -- AKHIR CLOUDINARY UPLOAD --
         }
     } elseif (isset($profile_picture_file) && $profile_picture_file['error'] !== UPLOAD_ERR_NO_FILE) {
         $errors[] = "Terjadi kesalahan saat mengunggah file.";
@@ -123,8 +143,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Jika semua query berhasil, commit transaksi
             $conn->commit();
 
-            // Hapus foto lama jika ada foto baru yang berhasil diupload dan disimpan
-            if ($profile_picture_db_path && $old_pic_path && file_exists(dirname(__DIR__) . '/admin/' . $old_pic_path)) {
+            // Hapus foto lama jika ada foto baru yang berhasil diupload dan disimpan (hanya jika foto lama adalah file lokal)
+            if ($profile_picture_db_path && $old_pic_path && !filter_var($old_pic_path, FILTER_VALIDATE_URL) && file_exists(dirname(__DIR__) . '/admin/' . $old_pic_path)) {
                 unlink(dirname(__DIR__) . '/admin/' . $old_pic_path);
             }
 

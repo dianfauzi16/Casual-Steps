@@ -374,8 +374,9 @@ if (!empty($tanggal_mulai_filter) && !empty($tanggal_akhir_filter)) {
                                                 <tr>
                                                     <td><?php echo $rank++; ?>.</td>
                                                     <td><?php $gambar_produk_laris = htmlspecialchars($produk_item['gambar_produk'] ?? '');
-                                                        $path_gambar_laris = "uploads/produk/" . $gambar_produk_laris;
-                                                        if (!empty($gambar_produk_laris) && file_exists($path_gambar_laris)): ?><img src="<?php echo $path_gambar_laris; ?>" alt="<?php echo htmlspecialchars($produk_item['nama_produk']); ?>" class="product-report-img"><?php else: ?><img src="placeholder_image.png" alt="Tidak ada gambar" class="product-report-img"><?php endif; ?></td>
+                                                        $is_url_laris = filter_var($gambar_produk_laris, FILTER_VALIDATE_URL);
+                                                        $path_gambar_laris = $is_url_laris ? $gambar_produk_laris : "uploads/produk/" . $gambar_produk_laris;
+                                                        if (!empty($gambar_produk_laris) && ($is_url_laris || file_exists($path_gambar_laris))): ?><img src="<?php echo $path_gambar_laris; ?>" alt="<?php echo htmlspecialchars($produk_item['nama_produk']); ?>" class="product-report-img"><?php else: ?><img src="placeholder_image.png" alt="Tidak ada gambar" class="product-report-img"><?php endif; ?></td>
                                                     <td><a href="edit_produk.php?id=<?php echo $produk_item['id']; ?>" target="_blank" title="Lihat Produk Ini"><?php echo htmlspecialchars($produk_item['nama_produk']); ?></a></td>
                                                     <td class="text-center"><?php echo htmlspecialchars($produk_item['total_terjual']); ?> unit</td>
                                                 </tr>

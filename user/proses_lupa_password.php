@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -61,8 +61,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $mail->isSMTP();
                     $mail->Host = 'smtp.gmail.com'; // Contoh: smtp.gmail.com untuk Gmail
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'dianfauzi16@students.amikom.ac.id'; // Ganti dengan email pengirim Anda
-                    $mail->Password = 'mzzzrgudlmiujniv'; // Ganti dengan password email pengirim Anda (gunakan App Password jika 2FA aktif)
+                    $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? ($_SERVER['SMTP_USER'] ?? ''));
+                    $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? ($_SERVER['SMTP_PASS'] ?? ''));
+                    
+                    // Fallback manual membaca file .env jika getenv/$_ENV gagal di Windows/Laragon
+                    if (empty($smtp_user) || empty($smtp_pass)) {
+                        $envPath = dirname(__DIR__) . '/.env';
+                        if (file_exists($envPath)) {
+                            $envLines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                            foreach ($envLines as $line) {
+                                if (strpos(trim($line), 'SMTP_USER=') === 0) {
+                                    $smtp_user = trim(str_replace('"', '', substr(trim($line), 10)));
+                                }
+                                if (strpos(trim($line), 'SMTP_PASS=') === 0) {
+                                    $smtp_pass = trim(str_replace('"', '', substr(trim($line), 10)));
+                                }
+                            }
+                        }
+                    }
+
+                    $mail->Username = $smtp_user; // Diambil dari .env
+                    $mail->Password = $smtp_pass; // Diambil dari .env
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Atau ENCRYPTION_SMTPS untuk port 465
                     $mail->Port = 587; // Port SMTP, biasanya 587 untuk STARTTLS, 465 untuk SMTPS
 

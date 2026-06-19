@@ -73,7 +73,7 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) { // Val
                         $message = "Produk berhasil dihapus!";
                         $message_type = "success";
 
-                        if ($image_to_delete) {
+                        if ($image_to_delete && !filter_var($image_to_delete, FILTER_VALIDATE_URL)) {
                             $target_dir = "uploads/produk/";
                             $file_path_to_delete = $target_dir . $image_to_delete;
                             if (file_exists($file_path_to_delete)) {

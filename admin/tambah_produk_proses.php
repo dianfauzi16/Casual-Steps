@@ -9,8 +9,33 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
     die("Akses ditolak. Silakan login terlebih dahulu."); 
 }
 
-// Menyertakan file koneksi database
 require_once 'db_connect.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
+
+// Konfigurasi Cloudinary dari Environment Variable
+$cloudinaryUrl = getenv('CLOUDINARY_URL') ?: ($_ENV['CLOUDINARY_URL'] ?? ($_SERVER['CLOUDINARY_URL'] ?? null));
+
+// Fallback manual membaca file .env jika getenv/$_ENV gagal di Windows/Laragon
+if (empty($cloudinaryUrl)) {
+    $envPath = dirname(__DIR__) . '/.env';
+    if (file_exists($envPath)) {
+        $envLines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($envLines as $line) {
+            if (strpos(trim($line), 'CLOUDINARY_URL=') === 0) {
+                // Menghilangkan 'CLOUDINARY_URL=' dan tanda kutip ganda jika ada
+                $cloudinaryUrl = trim(str_replace('"', '', substr(trim($line), 15)));
+                break;
+            }
+        }
+    }
+}
+
+if ($cloudinaryUrl) {
+    Configuration::instance($cloudinaryUrl);
+}
 
 // Inisialisasi variabel untuk pesan
 $message = "";
@@ -78,11 +103,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($upload_ok == 0) {
                 // Pesan error sudah diatur di atas, $product_image_name_to_save akan tetap null
             } else {
-                // Jika semua oke, coba upload file
-                if (!move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
-                    $message = "Maaf, terjadi error saat mengunggah file gambar Anda.";
-                    $message_type = "danger";
-                    $product_image_name_to_save = null; // Set kembali jadi null jika gagal upload
+                // Jika semua oke, coba upload file ke Cloudinary
+                if ($cloudinaryUrl) {
+                    try {
+                        $uploadApi = new UploadApi();
+                        $result = $uploadApi->upload($_FILES["product_image"]["tmp_name"], [
+                            'folder' => 'casual_steps_produk'
+                        ]);
+                        $product_image_name_to_save = $result['secure_url']; // Menyimpan URL Cloudinary
+                    } catch (Exception $e) {
+                        $message = "Maaf, terjadi error saat mengunggah gambar ke Cloudinary: " . $e->getMessage();
+                        $message_type = "danger";
+                        $product_image_name_to_save = null;
+                    }
+                } else {
+                    // Fallback lokal jika CLOUDINARY_URL belum di-set
+                    if (!move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+                        $message = "Maaf, terjadi error saat mengunggah file gambar Anda.";
+                        $message_type = "danger";
+                        $product_image_name_to_save = null;
+                    }
                 }
             }
         } elseif (isset($_FILES['product_image']) && $_FILES['product_image']['error'] != UPLOAD_ERR_NO_FILE && $_FILES['product_image']['error'] != 0) {

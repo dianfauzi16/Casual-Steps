@@ -319,11 +319,12 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                                             // --- AKHIR LOGIKA PROMO YANG DIPERBAIKI ---
 
                                             $image_name = htmlspecialchars($product['image'] ?? '');
-                                            $image_url = "../admin/uploads/produk/" . $image_name;
+                                            $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
+                                            $image_url = $is_url ? $image_name : "../admin/uploads/produk/" . $image_name;
                                             $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
                                             $placeholder_url = "../admin/placeholder_image.png";
 
-                                            if (!empty($image_name) && file_exists($image_file)):
+                                            if (!empty($image_name) && ($is_url || file_exists($image_file))):
                                             ?>
                                                 <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
                                             <?php else: ?>

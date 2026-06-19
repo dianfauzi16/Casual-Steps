@@ -11,6 +11,31 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
 
 // Sertakan file koneksi database
 require_once 'db_connect.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
+
+$cloudinaryUrl = getenv('CLOUDINARY_URL') ?: ($_ENV['CLOUDINARY_URL'] ?? ($_SERVER['CLOUDINARY_URL'] ?? null));
+
+// Fallback manual membaca file .env jika getenv/$_ENV gagal di Windows/Laragon
+if (empty($cloudinaryUrl)) {
+    $envPath = dirname(__DIR__) . '/.env';
+    if (file_exists($envPath)) {
+        $envLines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($envLines as $line) {
+            if (strpos(trim($line), 'CLOUDINARY_URL=') === 0) {
+                // Menghilangkan 'CLOUDINARY_URL=' dan tanda kutip ganda jika ada
+                $cloudinaryUrl = trim(str_replace('"', '', substr(trim($line), 15)));
+                break;
+            }
+        }
+    }
+}
+
+if ($cloudinaryUrl) {
+    Configuration::instance($cloudinaryUrl);
+}
 
 $message = "";
 $message_type = ""; // "success" atau "danger"
@@ -60,15 +85,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             if ($upload_ok == 1) {
-                if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
-                    if (!empty($old_product_image) && file_exists($target_dir . $old_product_image)) {
-                        unlink($target_dir . $old_product_image);
+                if ($cloudinaryUrl) {
+                    try {
+                        $uploadApi = new UploadApi();
+                        $result = $uploadApi->upload($_FILES["product_image"]["tmp_name"], [
+                            'folder' => 'casual_steps_produk'
+                        ]);
+                        $product_image_name_to_save = $result['secure_url'];
+                        
+                        // Hapus file lokal lama jika bukan URL Cloudinary
+                        if (!empty($old_product_image) && !filter_var($old_product_image, FILTER_VALIDATE_URL) && file_exists($target_dir . $old_product_image)) {
+                            unlink($target_dir . $old_product_image);
+                        }
+                    } catch (Exception $e) {
+                        $message = "Maaf, terjadi error saat mengunggah gambar ke Cloudinary: " . $e->getMessage();
+                        $message_type = "danger";
+                        $upload_ok = 0;
                     }
-                    $product_image_name_to_save = $new_product_image_name;
                 } else {
-                    $message = "Maaf, terjadi error saat mengunggah file gambar baru Anda.";
-                    $message_type = "danger";
-                    $upload_ok = 0; 
+                    if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+                        if (!empty($old_product_image) && !filter_var($old_product_image, FILTER_VALIDATE_URL) && file_exists($target_dir . $old_product_image)) {
+                            unlink($target_dir . $old_product_image);
+                        }
+                        $product_image_name_to_save = $new_product_image_name;
+                    } else {
+                        $message = "Maaf, terjadi error saat mengunggah file gambar baru Anda.";
+                        $message_type = "danger";
+                        $upload_ok = 0; 
+                    }
                 }
             }
         } elseif (isset($_FILES['product_image']) && $_FILES['product_image']['error'] != UPLOAD_ERR_NO_FILE && $_FILES['product_image']['error'] != 0) {

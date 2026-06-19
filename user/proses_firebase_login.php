@@ -1,4 +1,6 @@
-﻿<?php
+<?php
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -26,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (strpos($_SERVER['CONTENT_TYPE'], '
 
     try {
         // Ganti dengan nama file kunci proyek BARU Anda
-        $factory = (new Factory())->withServiceAccount(__DIR__ . '/casula-steps-firebase-adminsdk-fbsvc-d0c59a3521.json');
+        $factory = (new Factory())->withServiceAccount(__DIR__ . '/casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json');
         $auth = $factory->createAuth();
 
         $verifiedIdToken = $auth->verifyIdToken($idToken);

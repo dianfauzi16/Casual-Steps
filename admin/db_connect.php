@@ -1,12 +1,30 @@
 <?php
-// Pengaturan untuk koneksi ke database
-$host = "sql209.infinityfree.com";
-$username_db = "if0_41956069_XXX";
-$password_db = "PIRYyCnCaO";
-$database_name = "if0_41956069"; // Pastikan ini nama database Anda
+// Menyembunyikan peringatan Deprecated (Biasanya muncul dari Guzzle/Library lama di PHP versi terbaru)
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
+// Memuat autoloader Composer dan file .env jika ada
+$autoload_path = dirname(__DIR__) . '/vendor/autoload.php';
+if (file_exists($autoload_path)) {
+    require_once $autoload_path;
+    if (class_exists('Dotenv\Dotenv')) {
+        $dotenv_dir = dirname(__DIR__);
+        if (file_exists($dotenv_dir . '/.env')) {
+            // Menggunakan createUnsafeImmutable agar bisa dibaca fungsi getenv()
+            $dotenv = Dotenv\Dotenv::createUnsafeImmutable($dotenv_dir);
+            $dotenv->load();
+        }
+    }
+}
+
+// Pengaturan untuk koneksi ke database (Dinamis untuk Railway & Localhost)
+$host = getenv('MYSQLHOST') ?: ($_ENV['MYSQLHOST'] ?? "127.0.0.1");
+$username_db = getenv('MYSQLUSER') ?: ($_ENV['MYSQLUSER'] ?? "root");
+$password_db = getenv('MYSQLPASSWORD') ?: ($_ENV['MYSQLPASSWORD'] ?? "");
+$database_name = getenv('MYSQLDATABASE') ?: ($_ENV['MYSQLDATABASE'] ?? "pemro-web");
+$port = getenv('MYSQLPORT') ?: ($_ENV['MYSQLPORT'] ?? 3306);
 
 // Membuat koneksi ke database
-$conn = new mysqli($host, $username_db, $password_db, $database_name);
+$conn = new mysqli($host, $username_db, $password_db, $database_name, $port);
 
 // Memeriksa apakah koneksi berhasil atau gagal
 if ($conn->connect_error) {

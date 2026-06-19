@@ -193,11 +193,14 @@ if (isset($_GET['id']) && !empty(trim($_GET['id']))) {
                             <div class="mt-2">
                                 <p class="mb-1">Gambar Saat Ini:</p>
                                 <?php
-                                    $current_image_path = "uploads/produk/" . htmlspecialchars($produk['image']); //
-                                    if (file_exists($current_image_path)) { //
-                                        echo '<img src="' . $current_image_path . '" alt="Gambar Produk Saat Ini" class="current-product-image">'; //
+                                    $image_name = htmlspecialchars($produk['image']);
+                                    $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
+                                    $current_image_path = $is_url ? $image_name : "uploads/produk/" . $image_name;
+                                    
+                                    if ($is_url || file_exists($current_image_path)) {
+                                        echo '<img src="' . $current_image_path . '" alt="Gambar Produk Saat Ini" class="current-product-image">';
                                     } else {
-                                        echo '<p class="text-danger">File gambar saat ini tidak ditemukan.</p>'; //
+                                        echo '<p class="text-danger">File gambar saat ini tidak ditemukan.</p>';
                                     }
                                 ?>
                                 <input type="hidden" name="old_product_image" value="<?php echo htmlspecialchars($produk['image']); ?>">

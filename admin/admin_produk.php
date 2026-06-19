@@ -145,8 +145,9 @@ if ($stmt_produk = $conn->prepare($sql_produk)) {
                                     <td>
                                         <?php 
                                         $nama_file_gambar = htmlspecialchars($produk['image'] ?? '');
-                                        $path_gambar = "uploads/produk/" . $nama_file_gambar;
-                                        if (!empty($nama_file_gambar) && file_exists($path_gambar)): 
+                                        $is_url = filter_var($nama_file_gambar, FILTER_VALIDATE_URL);
+                                        $path_gambar = $is_url ? $nama_file_gambar : "uploads/produk/" . $nama_file_gambar;
+                                        if (!empty($nama_file_gambar) && ($is_url || file_exists($path_gambar))): 
                                         ?>
                                             <img src="<?php echo $path_gambar; ?>" alt="<?php echo htmlspecialchars($produk['name']); ?>" class="product-thumbnail">
                                         <?php else: ?>

@@ -55,15 +55,15 @@ if ($result_brands) {
 
 // Mapping brand ke logo untuk ditampilkan. Kunci harus huruf kecil.
 $brand_logos = [
-  'adidas' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Adidas_logo.png/800px-Adidas_logo.png',
-  'nike' => 'https://images.seeklogo.com/logo-png/9/1/nike-logo-png_seeklogo-99478.png',
-  'nb' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/New_Balance_logo.svg/640px-New_Balance_logo.svg.png',
-  'new balance' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/New_Balance_logo.svg/640px-New_Balance_logo.svg.png',
-  'puma' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Puma-logo-%28text%29.svg/640px-Puma-logo-%28text%29.svg.png',
-  'vans' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Vans-logo.svg/640px-Vans-logo.svg.png',
-  'converse' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Converse_logo.svg/640px-Converse_logo.svg.png',
-  'salomon' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Salomon_logo.svg/640px-Salomon_logo.svg.png', // Logo Salomon ditambahkan
-  'hoka' => 'https://cdn.freelogovectors.net/wp-content/uploads/2022/07/hoka-logo-freelogovectors.net_.png'
+  'adidas' => '../admin/Assets/adidas-logo-png_seeklogo-263852.png',
+  'nike' => '../admin/Assets/nike-logo-png_seeklogo-99478.png',
+  'air jordan' => '../admin/Assets/air-jordan-logo-png_seeklogo-380953.png',
+  'new balance' => '../admin/Assets/new-balance-logo-png_seeklogo-260827.png',
+  'puma' => '../admin/Assets/puma-logo-png_seeklogo-304000.png',
+  'vans' => '../admin/Assets/vans-logo-png_seeklogo-147507.png',
+  'converse' => '../admin/Assets/converse-logo-png_seeklogo-35061.png',
+  'salomon' => '../admin/Assets/salomon-logo-png_seeklogo-284093.png',
+  'hoka' => '../admin/Assets/hoka-logo-png_seeklogo-405619.png'
 ];
 
 
@@ -273,11 +273,12 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                     <div class="product-card card h-100 shadow-sm bg-dark border-secondary">
                       <?php
                       $image_name_best = htmlspecialchars($product['image'] ?? '');
-                      $image_url_best = "../admin/uploads/produk/" . $image_name_best;
+                      $is_url_best = filter_var($image_name_best, FILTER_VALIDATE_URL);
+                      $image_url_best = $is_url_best ? $image_name_best : "../admin/uploads/produk/" . $image_name_best;
                       $image_file_best = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_best;
                       $placeholder_url_best = "../admin/placeholder_image.png";
 
-                      if (!empty($image_name_best) && file_exists($image_file_best)):
+                      if (!empty($image_name_best) && ($is_url_best || file_exists($image_file_best))):
                       ?>
                         <img src="<?php echo $image_url_best; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                       <?php else: ?>
@@ -370,11 +371,12 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
                 <div class="product-card card h-100 shadow-sm">
                   <?php
                   $image_name = htmlspecialchars($product['image'] ?? '');
-                  $image_url = "../admin/uploads/produk/" . $image_name;
+                  $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
+                  $image_url = $is_url ? $image_name : "../admin/uploads/produk/" . $image_name;
                   $image_file = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name;
                   $placeholder_url = "../admin/placeholder_image.png";
 
-                  if (!empty($image_name) && file_exists($image_file)):
+                  if (!empty($image_name) && ($is_url || file_exists($image_file))):
                   ?>
                     <img src="<?php echo $image_url; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover;">
                   <?php else: ?>
@@ -452,20 +454,25 @@ $current_page_base = basename($_SERVER['PHP_SELF']);
   <section id="about" class="about-section">
     <div class="brand-bar">
       <div class="brand-carousel">
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png" alt="Nike Logo" /></div>
-        <div class="brand-logo"><img src="https://brandslogos.com/wp-content/uploads/images/adidas-logo.png" alt="Adidas Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Vans-logo.svg/640px-Vans-logo.svg.png" alt="Vans Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Reebok_complete_logo_red.svg/640px-Reebok_complete_logo_red.svg.png" alt="Reebok Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Puma-logo-%28text%29.svg/640px-Puma-logo-%28text%29.svg.png" alt="Puma Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/New_Balance_logo.svg/640px-New_Balance_logo.svg.png" alt="New Balance Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Converse_logo.svg/640px-Converse_logo.svg.png" alt="Converse Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png" alt="Nike Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Adidas_logo.png/800px-Adidas_logo.png" alt="Adidas Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Vans-logo.svg/640px-Vans-logo.svg.png" alt="Vans Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Reebok_complete_logo_red.svg/640px-Reebok_complete_logo_red.svg.png" alt="Reebok Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Puma-logo-%28text%29.svg/640px-Puma-logo-%28text%29.svg.png" alt="Puma Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/New_Balance_logo.svg/640px-New_Balance_logo.svg.png" alt="New Balance Logo" /></div>
-        <div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Converse_logo.svg/640px-Converse_logo.svg.png" alt="Converse Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/nike-logo-png_seeklogo-99478.png" alt="Nike Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/adidas-logo-png_seeklogo-263852.png" alt="Adidas Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/vans-logo-png_seeklogo-147507.png" alt="Vans Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/air-jordan-logo-png_seeklogo-380953.png" alt="Air Jordan Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/puma-logo-png_seeklogo-304000.png" alt="Puma Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/new-balance-logo-png_seeklogo-260827.png" alt="New Balance Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/converse-logo-png_seeklogo-35061.png" alt="Converse Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/salomon-logo-png_seeklogo-284093.png" alt="Salomon Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/hoka-logo-png_seeklogo-405619.png" alt="Hoka Logo" /></div>
+        <!-- Duplikat untuk efek carousel seamless -->
+        <div class="brand-logo"><img src="../admin/Assets/nike-logo-png_seeklogo-99478.png" alt="Nike Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/adidas-logo-png_seeklogo-263852.png" alt="Adidas Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/vans-logo-png_seeklogo-147507.png" alt="Vans Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/air-jordan-logo-png_seeklogo-380953.png" alt="Air Jordan Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/puma-logo-png_seeklogo-304000.png" alt="Puma Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/new-balance-logo-png_seeklogo-260827.png" alt="New Balance Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/converse-logo-png_seeklogo-35061.png" alt="Converse Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/salomon-logo-png_seeklogo-284093.png" alt="Salomon Logo" /></div>
+        <div class="brand-logo"><img src="../admin/Assets/hoka-logo-png_seeklogo-405619.png" alt="Hoka Logo" /></div>
       </div>
     </div>
   </section>

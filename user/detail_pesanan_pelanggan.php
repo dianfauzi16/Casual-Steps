@@ -238,11 +238,12 @@ if (isset($_GET['id_order']) && filter_var($_GET['id_order'], FILTER_VALIDATE_IN
                                             <td style="width: 70px;">
                                                 <?php
                                                 $image_name_item = htmlspecialchars($item['gambar_produk_terkini'] ?? '');
-                                                $image_url_item = "../admin/uploads/produk/" . $image_name_item;
+                                                $is_url_item = filter_var($image_name_item, FILTER_VALIDATE_URL);
+                                                $image_url_item = $is_url_item ? $image_name_item : "../admin/uploads/produk/" . $image_name_item;
                                                 $image_file_item = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_item;
                                                 $placeholder_url_item = "../admin/placeholder_image.png";
 
-                                                if (!empty($image_name_item) && file_exists($image_file_item)):
+                                                if (!empty($image_name_item) && ($is_url_item || file_exists($image_file_item))):
                                                 ?>
                                                     <img src="<?php echo $image_url_item; ?>" alt="<?php echo htmlspecialchars($item['nama_produk_saat_pesan']); ?>" class="img-thumbnail">
                                                 <?php else: ?>

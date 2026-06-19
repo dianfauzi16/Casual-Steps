@@ -171,11 +171,12 @@ if (isset($_SESSION['keranjang']) && !empty($_SESSION['keranjang'])) {
                                 <td style="width: 100px;">
                                     <?php
                                     $image_name_cart = htmlspecialchars($item['image'] ?? '');
-                                    $image_url_cart = "../admin/uploads/produk/" . $image_name_cart;
+                                    $is_url_cart = filter_var($image_name_cart, FILTER_VALIDATE_URL);
+                                    $image_url_cart = $is_url_cart ? $image_name_cart : "../admin/uploads/produk/" . $image_name_cart;
                                     $image_file_cart = dirname(__DIR__) . '/admin/uploads/produk/' . $image_name_cart;
                                     $placeholder_url_cart = "../admin/placeholder_image.png";
 
-                                    if (!empty($image_name_cart) && file_exists($image_file_cart)):
+                                    if (!empty($image_name_cart) && ($is_url_cart || file_exists($image_file_cart))):
                                     ?>
                                         <img src="<?php echo $image_url_cart; ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="img-thumbnail cart-item-img">
                                     <?php else: ?>
