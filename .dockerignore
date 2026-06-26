@@ -1,0 +1,36 @@
+# ===========================================
+# .dockerignore — Casual Steps
+# File/folder yang TIDAK perlu masuk ke image
+# ===========================================
+
+# Git
+.git
+.gitignore
+
+# Environment & credentials (Railway inject via env vars)
+.env
+.env.*
+
+# IDE & editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Database dumps
+*.sql
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Composer — akan di-install ulang saat build
+/vendor/
+
+# Dokumentasi (opsional, kurangi ukuran image)
+README.md
+
+# Docker files sendiri
+Dockerfile
+.dockerignore
+docker-compose.yml

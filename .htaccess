@@ -1,6 +1,27 @@
+# ===========================================
+# .htaccess — Casual Steps Production
+# ===========================================
+
+# Nonaktifkan directory listing
 Options -Indexes
 
-<FilesMatch "\.(sql|env|json|lock|md)$">
+# Blokir akses langsung ke file sensitif
+<FilesMatch "\.(sql|env|json|lock|md|log)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# Blokir akses langsung ke Dockerfile dan .dockerignore
+<FilesMatch "^(Dockerfile|\.dockerignore)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Proteksi folder app/ agar tidak bisa diakses langsung via URL
+# (Views, Controllers, Models, Core hanya boleh diakses via PHP include)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Blokir akses langsung ke folder app/
+    RewriteRule ^app/ - [F,L]
+</IfModule>
