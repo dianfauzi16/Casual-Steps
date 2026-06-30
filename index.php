@@ -7,7 +7,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Menentukan Base URL secara dinamis agar path file & redirect selalu akurat
-$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
+            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$base_url = ($is_https ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 $base_url .= str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 if (substr($base_url, -1) !== '/') {
     $base_url .= '/';
