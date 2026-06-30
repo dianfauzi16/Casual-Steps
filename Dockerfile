@@ -90,10 +90,10 @@ EXPOSE 80
 
 # -----------------------------------------------------------
 # 10. Startup: Sesuaikan port Apache dengan $PORT dari Railway,
-#     lalu jalankan Apache di foreground
+#     pastikan hanya mpm_prefork yang aktif, lalu jalankan Apache
 # -----------------------------------------------------------
-CMD ["sh", "-c", "\
-    sed -i \"s/Listen 80/Listen ${PORT:-80}/g\" /etc/apache2/ports.conf && \
-    sed -i \"s/:80/:${PORT:-80}/g\" /etc/apache2/sites-available/000-default.conf && \
-    apache2-foreground \
-"]
+CMD sed -i "s/Listen 80/Listen ${PORT:-80}/g" /etc/apache2/ports.conf && \
+    sed -i "s/:80/:${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf && \
+    rm -f /etc/apache2/mods-enabled/mpm_*.load && \
+    ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load && \
+    apache2-foreground
