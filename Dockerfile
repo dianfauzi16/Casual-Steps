@@ -33,7 +33,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------
 # 2. Aktifkan Apache mod_rewrite & mod_headers
 # -----------------------------------------------------------
-RUN a2enmod rewrite headers
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork \
+    && a2enmod rewrite headers
 
 # -----------------------------------------------------------
 # 3. Konfigurasi Apache — Document Root di /var/www/html
