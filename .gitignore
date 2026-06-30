@@ -6,8 +6,6 @@
 .env.*
 *.env
 casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json
-/public/js/firebase_config.js
-
 # File Database Dump
 *.sql
 
