@@ -11,7 +11,7 @@
         overflow: hidden;
     }
     .login-image-side { 
-        background: linear-gradient(135deg, rgba(13,110,253,0.9), rgba(13,202,240,0.8)), url('<?= BASE_URL ?>assets/sp2.png');
+        background: linear-gradient(135deg, rgba(13,110,253,0.9), rgba(13,202,240,0.8)), url('<?= BASE_URL ?>admin/Assets/1.png');
         background-size: cover; 
         background-position: center; 
         position: relative;
