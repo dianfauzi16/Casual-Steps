@@ -127,7 +127,12 @@ class AuthController extends Controller {
 
             try {
                 // Koneksi ke Firebase SDK
-                $factory = (new Factory())->withServiceAccount(dirname(dirname(__DIR__)) . '/casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json');
+                $firebaseCreds = getenv('FIREBASE_CREDENTIALS');
+                if ($firebaseCreds) {
+                    $factory = (new Factory())->withServiceAccount($firebaseCreds);
+                } else {
+                    $factory = (new Factory())->withServiceAccount(dirname(dirname(__DIR__)) . '/casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json');
+                }
                 $auth = $factory->createAuth();
                 $verifiedIdToken = $auth->verifyIdToken($idToken);
 
