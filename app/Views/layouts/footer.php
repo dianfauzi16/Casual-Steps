@@ -53,7 +53,7 @@
             
             <hr class="my-4 border-secondary" />
             <div class="text-center">
-                <p class="mb-0 text-white-50">© <?= date('Y') ?> <?= htmlspecialchars($global_settings['nama_toko'] ?? 'CasualSteps') ?>. Hak cipta dilindungi undang-undang.</p>
+                <p class="mb-0 text-white-50">© <?= date('Y') ?> <?= htmlspecialchars($global_settings['nama_toko'] ?? 'CasualSteps') ?>. Personal Portfolio.</p>
             </div>
         </div>
     </footer>
