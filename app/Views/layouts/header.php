@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($page_title) ? htmlspecialchars($page_title) : 'Casual Steps'; ?> - <?= htmlspecialchars($global_settings['nama_toko'] ?? 'Casual Steps') ?></title>
     <meta name="description" content="<?= htmlspecialchars($global_settings['deskripsi_toko'] ?? 'Menyediakan koleksi sepatu premium dan kasual dengan harga terbaik.') ?>">
+    <link rel="icon" href="<?= BASE_URL ?>admin/Assets/logo.png" type="image/png">
 
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website">
