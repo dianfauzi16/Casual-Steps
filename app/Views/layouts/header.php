@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($page_title) ? htmlspecialchars($page_title) : 'Casual Steps'; ?> - <?= htmlspecialchars($global_settings['nama_toko'] ?? 'Casual Steps') ?></title>
+    <meta name="description" content="<?= htmlspecialchars($global_settings['deskripsi_toko'] ?? 'Menyediakan koleksi sepatu premium dan kasual dengan harga terbaik.') ?>">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
+    <meta property="og:title" content="<?= isset($page_title) ? htmlspecialchars($page_title) : 'Casual Steps'; ?> - <?= htmlspecialchars($global_settings['nama_toko'] ?? 'Casual Steps') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($global_settings['deskripsi_toko'] ?? 'Menyediakan koleksi sepatu premium dan kasual dengan harga terbaik.') ?>">
+    <meta property="og:image" content="<?= BASE_URL ?>admin/Assets/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
+    <meta property="twitter:title" content="<?= isset($page_title) ? htmlspecialchars($page_title) : 'Casual Steps'; ?> - <?= htmlspecialchars($global_settings['nama_toko'] ?? 'Casual Steps') ?>">
+    <meta property="twitter:description" content="<?= htmlspecialchars($global_settings['deskripsi_toko'] ?? 'Menyediakan koleksi sepatu premium dan kasual dengan harga terbaik.') ?>">
+    <meta property="twitter:image" content="<?= BASE_URL ?>admin/Assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
