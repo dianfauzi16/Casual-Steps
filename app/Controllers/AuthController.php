@@ -215,8 +215,8 @@ class AuthController extends Controller {
                         $mail->SMTPAuth = true;
                         
                         // Load credentials dari .env
-                        $smtp_user = $_ENV['SMTP_USER'] ?? '';
-                        $smtp_pass = $_ENV['SMTP_PASS'] ?? '';
+                        $smtp_user = getenv('SMTP_USER') ?: '';
+                        $smtp_pass = getenv('SMTP_PASS') ?: '';
 
                         $mail->Username = $smtp_user; 
                         $mail->Password = $smtp_pass; 

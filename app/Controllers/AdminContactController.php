@@ -97,8 +97,8 @@ class AdminContactController extends AdminBaseController {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com'; 
                 $mail->SMTPAuth = true;
-                $mail->Username = 'dianfauzi16@students.amikom.ac.id'; 
-                $mail->Password = 'mzzzrgudlmiujniv'; 
+                $mail->Username = getenv('SMTP_USER') ?: ''; 
+                $mail->Password = getenv('SMTP_PASS') ?: ''; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587; 
                 $mail->CharSet = 'UTF-8'; 
