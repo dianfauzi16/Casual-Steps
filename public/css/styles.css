@@ -1,7 +1,9 @@
 /* Global Styles */
-body {
+html, body {
   font-family: "poppins", Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 h1,
