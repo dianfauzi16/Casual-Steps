@@ -24,4 +24,11 @@ Options -Indexes
 
     # Blokir akses langsung ke folder app/
     RewriteRule ^app/ - [F,L]
+
+    # --- Routing MVC ---
+    # Jika request bukan file yang ada, bukan folder yang ada,
+    # arahkan ke index.php?url=<path>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
 </IfModule>
