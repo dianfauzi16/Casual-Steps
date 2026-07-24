@@ -2,8 +2,15 @@
 
 namespace App\Controllers;
 
+/**
+ * Controller untuk menangani fitur pengaturan aplikasi pada halaman admin.
+ * Membutuhkan admin untuk login (di-handle oleh AdminBaseController).
+ */
 class AdminSettingController extends AdminBaseController {
     
+    /**
+     * Menampilkan halaman pengaturan informasi toko dan sosial media.
+     */
     public function index() {
         $settingModel = $this->model('SettingModel');
         
@@ -29,6 +36,10 @@ class AdminSettingController extends AdminBaseController {
         $this->renderAdminView('admin/setting/index', $data);
     }
 
+    /**
+     * Menangani proses pembaruan data informasi toko dan sosial media.
+     * Menerima request method POST dari form di halaman pengaturan.
+     */
     public function update() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $settingModel = $this->model('SettingModel');
@@ -57,6 +68,9 @@ class AdminSettingController extends AdminBaseController {
         }
     }
 
+    /**
+     * Menampilkan halaman pengaturan sistem (pengumuman dan banner).
+     */
     public function system() {
         $settingModel = $this->model('SettingModel');
         
@@ -78,6 +92,10 @@ class AdminSettingController extends AdminBaseController {
         $this->renderAdminView('admin/setting/system', $data);
     }
 
+    /**
+     * Menangani proses pembaruan data sistem, termasuk pengaturan banner dan pengumuman.
+     * Menerima request method POST dari form dan file (untuk upload banner).
+     */
     public function updateSystem() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $settingModel = $this->model('SettingModel');

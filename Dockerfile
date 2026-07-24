@@ -9,12 +9,10 @@ FROM php:8.2-apache
 # 1. Install dependensi sistem & ekstensi PHP yang dibutuhkan
 # -----------------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Dependensi untuk ekstensi GD (image processing)
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libwebp-dev \
-    # Dependensi untuk ekstensi zip (dibutuhkan Composer & beberapa library)
     libzip-dev \
     unzip \
     && docker-php-ext-configure gd \

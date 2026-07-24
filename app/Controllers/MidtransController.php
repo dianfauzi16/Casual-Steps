@@ -6,18 +6,24 @@ use App\Core\Controller;
 
 class MidtransController extends Controller {
 
+    /**
+     * Menangani webhook/notifikasi dari Midtrans.
+     * Midtrans akan mengirimkan HTTP POST ke endpoint ini ketika status pembayaran berubah.
+     */
     public function notification() {
+        // Memuat autoload composer untuk menggunakan library Midtrans
         require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
         
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$serverKey = 'SB-Mid-server-7rXZtaLcNc8M3I9VZYtj9eoE'; // TODO: Move to DB/env
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
+        // Konfigurasi dasar Midtrans
+        \Midtrans\Config::$isProduction = false; // Set true jika sudah di production
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-7rXZtaLcNc8M3I9VZYtj9eoE'; // TODO: Pindahkan ke file .env atau Database untuk keamanan
+        \Midtrans\Config::$isSanitized = true; // Membersihkan input yang dikirimkan ke Midtrans
+        \Midtrans\Config::$is3ds = true; // Mengaktifkan 3D Secure untuk pembayaran kartu kredit
 
         try {
             $notif = new \Midtrans\Notification();
         } catch (\Exception $e) {
-            http_response_code(400); // Bad request
+            http_response_code(400); 
             error_log('Midtrans Notification Error: ' . $e->getMessage());
             exit;
         }
@@ -29,7 +35,8 @@ class MidtransController extends Controller {
 
         $orderModel = $this->model('OrderModel');
         
-        // Custom query to get order by midtrans_order_id
+        // Mengambil data pesanan dari database berdasarkan midtrans_order_id
+        // Menggunakan prepared statement untuk mencegah SQL Injection
         $db = $orderModel->getDb();
         $sql_get_order = "SELECT id, status FROM orders WHERE midtrans_order_id = ?";
         $stmt_get_order = $db->prepare($sql_get_order);
@@ -40,7 +47,7 @@ class MidtransController extends Controller {
         $stmt_get_order->close();
 
         if (!$order) {
-            http_response_code(404); // Not Found
+            http_response_code(404); 
             error_log("Midtrans notification: Order not found for midtrans_order_id: " . $order_id_from_midtrans);
             exit;
         }
@@ -49,6 +56,7 @@ class MidtransController extends Controller {
         $current_status = $order['status'];
         $new_status = null;
 
+        // Logika penentuan status pesanan (internal) berdasarkan status transaksi dari Midtrans
         if ($transaction_status == 'capture') {
             if ($payment_type == 'credit_card') {
                 if ($fraud_status == 'challenge') {
@@ -65,6 +73,7 @@ class MidtransController extends Controller {
             $new_status = 'Dibatalkan';
         }
 
+        // Jika ada perubahan status, update status pesanan di database
         if ($new_status && $new_status !== $current_status) {
             $db->begin_transaction();
             try {
