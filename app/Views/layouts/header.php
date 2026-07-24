@@ -108,25 +108,88 @@
                 </div>
                 
                 <div class="d-flex align-items-center">
-                    <form action="<?= BASE_URL ?>index.php" method="GET" class="d-flex me-3" role="search" id="headerSearchForm">
+                    <form action="<?= BASE_URL ?>index.php" method="GET" class="d-flex me-3 position-relative" role="search" id="headerSearchForm">
                         <input type="hidden" name="url" value="Product/index">
-                        <input class="form-control form-control-sm me-1" type="search" name="keyword_pencarian" id="headerSearchInput" placeholder="Cari produk..." aria-label="Cari produk" value="<?= htmlspecialchars($_GET['keyword_pencarian'] ?? ''); ?>">
-                        <button class="btn btn-outline-primary btn-sm" type="submit" id="headerSearchBtn" <?= empty($_GET['keyword_pencarian']) ? 'disabled' : '' ?>><i class="fas fa-search"></i></button>
+                        <input class="form-control form-control-sm me-1" type="search" name="keyword_pencarian" id="headerSearchInput" placeholder="Cari produk..." aria-label="Cari produk" autocomplete="off" value="<?= htmlspecialchars($_GET['keyword_pencarian'] ?? ''); ?>">
+                        <button class="btn btn-outline-primary btn-sm" type="submit" id="headerSearchBtn"><i class="fas fa-search"></i></button>
+                        <div id="searchResults" class="dropdown-menu w-100 position-absolute shadow-sm" style="top: 100%; display: none; z-index: 1000; padding: 0; max-height: 400px; overflow-y: auto;"></div>
                     </form>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                             const searchInput = document.getElementById('headerSearchInput');
-                            const searchBtn = document.getElementById('headerSearchBtn');
+                            const searchResults = document.getElementById('searchResults');
+                            let timeout = null;
                             
                             searchInput.addEventListener('input', function() {
-                                if (this.value.trim().length > 0) {
-                                    searchBtn.removeAttribute('disabled');
+                                clearTimeout(timeout);
+                                const query = this.value.trim();
+                                if (query.length > 0) {
+                                    timeout = setTimeout(() => {
+                                        fetch('<?= BASE_URL ?>index.php?url=Product/search&q=' + encodeURIComponent(query))
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            searchResults.innerHTML = '';
+                                            if (data.length > 0) {
+                                                data.forEach(item => {
+                                                    let priceHTML = 'Rp ' + new Intl.NumberFormat('id-ID').format(item.price);
+                                                    if (item.discount_percent > 0) {
+                                                        let discPrice = item.price * (1 - item.discount_percent/100);
+                                                        priceHTML = '<span class="text-danger">Rp ' + new Intl.NumberFormat('id-ID').format(discPrice) + '</span>';
+                                                    }
+                                                    let imgUrl = item.image ? (item.image.startsWith('http') ? item.image : '<?= BASE_URL ?>admin/uploads/produk/' + item.image) : '<?= BASE_URL ?>admin/placeholder_image.png';
+                                                    
+                                                    let a = document.createElement('a');
+                                                    a.className = 'dropdown-item d-flex align-items-center py-2 border-bottom text-wrap';
+                                                    a.href = '<?= BASE_URL ?>index.php?url=Product/detail&id=' + item.id;
+                                                    a.innerHTML = `
+                                                        <img src="${imgUrl}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                                        <div>
+                                                            <div class="fw-bold" style="font-size: 0.85rem; line-height: 1.2;">${item.name}</div>
+                                                            <div style="font-size: 0.75rem; margin-top: 2px;">${priceHTML}</div>
+                                                        </div>
+                                                    `;
+                                                    searchResults.appendChild(a);
+                                                });
+                                                searchResults.style.display = 'block';
+                                            } else {
+                                                searchResults.innerHTML = '<div class="p-2 text-muted small text-center">Tidak ditemukan</div>';
+                                                searchResults.style.display = 'block';
+                                            }
+                                        });
+                                    }, 300);
                                 } else {
-                                    searchBtn.setAttribute('disabled', 'disabled');
+                                    searchResults.style.display = 'none';
+                                }
+                            });
+
+                            document.addEventListener('click', function(e) {
+                                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                                    searchResults.style.display = 'none';
                                 }
                             });
                         });
                     </script>
+
+                    <?php if (isset($_SESSION['user_loggedin']) && $_SESSION['user_loggedin'] === true): ?>
+                    <a href="<?= BASE_URL ?>index.php?url=Wishlist/index" class="position-relative me-3 text-dark nav-link" title="Wishlist">
+                        <i class="fas fa-heart fs-5"></i>
+                        <?php
+                        $wishlist_count = 0;
+                        if (isset($_SESSION['user_id'])) {
+                            try {
+                                $db_conn = \App\Core\Database::getInstance()->getConnection();
+                                $res = $db_conn->query("SELECT COUNT(*) as cnt FROM wishlists WHERE user_id = " . (int)$_SESSION['user_id']);
+                                if ($res && $row = $res->fetch_assoc()) {
+                                    $wishlist_count = (int)$row['cnt'];
+                                }
+                            } catch (\Exception $e) { }
+                        }
+                        ?>
+                        <span id="wishlist-counter" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65em; padding: 0.3em 0.5em; <?= $wishlist_count > 0 ? '' : 'display:none;' ?>">
+                            <?= $wishlist_count ?>
+                        </span>
+                    </a>
+                    <?php endif; ?>
 
                     <a href="<?= BASE_URL ?>index.php?url=Cart/index" class="position-relative me-3 text-dark nav-link" title="Keranjang Belanja">
                         <i class="fas fa-shopping-bag fs-5"></i>

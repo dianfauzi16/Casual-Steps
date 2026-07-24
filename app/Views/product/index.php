@@ -78,7 +78,17 @@
                                         if ($sedang_diskon) {
                                             echo '<span class="badge sale-badge"><i class="fas fa-fire me-1"></i> ' . htmlspecialchars($product['discount_percent']) . '% OFF</span>';
                                         }
+                                        
+                                        $is_wishlisted = isset($wishlisted_ids) && in_array($product['id'], $wishlisted_ids);
+                                        ?>
+                                        
+                                        <button class="btn btn-light rounded-circle shadow-sm position-absolute" 
+                                                style="top: 15px; right: 15px; z-index: 20; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                                                onclick="event.preventDefault(); toggleWishlist(<?= $product['id'] ?>)">
+                                            <i class="fa<?= $is_wishlisted ? 's' : 'r' ?> fa-heart text-<?= $is_wishlisted ? 'danger' : 'secondary' ?>" id="wishlist-icon-<?= $product['id'] ?>"></i>
+                                        </button>
 
+                                        <?php
                                         $image_name = htmlspecialchars($product['image'] ?? '');
                                         $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
                                         // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto untuk hemat bandwidth
@@ -122,8 +132,76 @@
                     </div>
                 <?php endif; ?>
             </div>
+
+            <?php if (isset($total_pages) && $total_pages > 1): ?>
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <?php
+                        $qs = [];
+                        if (!empty($kategori_id)) $qs['kategori'] = $kategori_id;
+                        if (!empty($keyword)) $qs['keyword_pencarian'] = $keyword;
+                        $qs_str = http_build_query($qs);
+                        $base_link = BASE_URL . "index.php?url=Product/index" . (!empty($qs_str) ? '&' . $qs_str : '');
+                        ?>
+                        
+                        <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= $base_link . '&page=' . ($current_page - 1) ?>">Previous</a>
+                        </li>
+                        
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?= ($current_page == $i) ? 'active' : '' ?>">
+                                <a class="page-link" href="<?= $base_link . '&page=' . $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                        
+                        <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= $base_link . '&page=' . ($current_page + 1) ?>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+
         </div>
     </div>
 </main>
 
+<script>
+function toggleWishlist(productId) {
+    fetch('<?= BASE_URL ?>index.php?url=Wishlist/toggle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'product_id=' + productId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error === 'unauthorized') {
+            window.location.href = '<?= BASE_URL ?>index.php?url=Auth/login';
+            return;
+        }
+        if (data.status === 'success') {
+            const icon = document.getElementById('wishlist-icon-' + productId);
+            if (data.wishlisted) {
+                icon.classList.remove('far', 'text-secondary');
+                icon.classList.add('fas', 'text-danger');
+            } else {
+                icon.classList.remove('fas', 'text-danger');
+                icon.classList.add('far', 'text-secondary');
+            }
+            // Update counter in header if exists
+            const counter = document.getElementById('wishlist-counter');
+            if (counter) {
+                counter.innerText = data.count;
+                counter.style.display = data.count > 0 ? 'inline-block' : 'none';
+            }
+        } else {
+            alert(data.message || 'Terjadi kesalahan');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
 <?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

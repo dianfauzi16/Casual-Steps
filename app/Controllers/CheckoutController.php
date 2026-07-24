@@ -139,8 +139,8 @@ class CheckoutController extends Controller {
         }
 
         require_once dirname(__DIR__) . '/../vendor/autoload.php';
-        \Midtrans\Config::$serverKey = 'SB-Mid-server-7rXZtaLcNc8M3I9VZYtj9eoE';
-        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$serverKey = $_ENV['MIDTRANS_SERVER_KEY'];
+        \Midtrans\Config::$isProduction = ($_ENV['MIDTRANS_IS_PRODUCTION'] === 'true');
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 

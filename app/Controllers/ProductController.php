@@ -12,8 +12,21 @@ class ProductController extends Controller {
         $kategori_id = isset($_GET['kategori']) && filter_var($_GET['kategori'], FILTER_VALIDATE_INT) ? (int)$_GET['kategori'] : null;
         $keyword = isset($_GET['keyword_pencarian']) ? trim($_GET['keyword_pencarian']) : '';
         
+        $per_page = 12;
+        $current_page = isset($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT) ? (int)$_GET['page'] : 1;
+        if ($current_page < 1) $current_page = 1;
+        $offset = ($current_page - 1) * $per_page;
+
         $categories = $productModel->getAllCategories();
-        $products = $productModel->getProducts($kategori_id, $keyword);
+        $total_products = $productModel->countProducts($kategori_id, $keyword);
+        $products = $productModel->getProducts($kategori_id, $keyword, $per_page, $offset);
+        $total_pages = ceil($total_products / $per_page);
+        
+        $wishlisted_ids = [];
+        if (isset($_SESSION['user_id'])) {
+            $wishlistModel = $this->model('WishlistModel');
+            $wishlisted_ids = $wishlistModel->getWishlistProductIds($_SESSION['user_id']);
+        }
         
         $current_category_name = null;
         $page_title = "Produk Kami";
@@ -36,7 +49,12 @@ class ProductController extends Controller {
             'categories' => $categories,
             'kategori_id' => $kategori_id,
             'keyword' => $keyword,
-            'current_category_name' => $current_category_name
+            'current_category_name' => $current_category_name,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'total_products' => $total_products,
+            'per_page' => $per_page,
+            'wishlisted_ids' => $wishlisted_ids
         ];
 
         $this->view('product/index', $data);
@@ -66,10 +84,13 @@ class ProductController extends Controller {
         $user_id = $_SESSION['user_id'] ?? null;
         $user_has_purchased = false;
         $user_has_rated = false;
+        $wishlisted = false;
 
         if ($user_id) {
             $user_has_purchased = $productModel->hasUserPurchasedProduct($user_id, $product_id);
             $user_has_rated = $productModel->hasUserRatedProduct($user_id, $product_id);
+            $wishlistModel = $this->model('WishlistModel');
+            $wishlisted = $wishlistModel->isWishlisted($user_id, $product_id);
         }
 
         $reviews = $productModel->getProductReviews($product_id);
@@ -80,7 +101,8 @@ class ProductController extends Controller {
             'available_sizes' => $available_sizes,
             'user_has_purchased' => $user_has_purchased,
             'user_has_rated' => $user_has_rated,
-            'reviews' => $reviews
+            'reviews' => $reviews,
+            'wishlisted' => $wishlisted
         ];
 
         $this->view('product/detail', $data);
@@ -109,5 +131,17 @@ class ProductController extends Controller {
             header('Location: ' . BASE_URL . 'index.php?url=Product/detail&id=' . $product_id);
             exit;
         }
+    }
+
+    public function search() {
+        header('Content-Type: application/json');
+        $keyword = isset($_GET['q']) ? trim($_GET['q']) : '';
+        if (empty($keyword)) {
+            echo json_encode([]);
+            return;
+        }
+        $productModel = $this->model('ProductModel');
+        $products = $productModel->liveSearch($keyword, 6);
+        echo json_encode($products);
     }
 }

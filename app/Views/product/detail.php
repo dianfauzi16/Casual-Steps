@@ -163,6 +163,9 @@
                                 <button type="submit" formaction="<?= BASE_URL ?>index.php?url=Checkout/buyNow" class="btn btn-dark add-to-cart-btn flex-fill">
                                     <i class="fas fa-bolt me-2"></i> Beli Sekarang
                                 </button>
+                                <button type="button" class="btn btn-light border add-to-cart-btn px-3" onclick="toggleWishlist(<?= $product['id'] ?>)" title="Wishlist">
+                                    <i class="fa<?= isset($wishlisted) && $wishlisted ? 's text-danger' : 'r text-secondary' ?> fa-heart fs-5" id="wishlist-icon-<?= $product['id'] ?>"></i>
+                                </button>
                             </div>
                         <?php else: ?>
                             <a href="<?= BASE_URL ?>index.php?url=Auth/login" class="btn btn-outline-dark add-to-cart-btn">
@@ -238,4 +241,40 @@
     <?php endif; ?>
 </main>
 
+<script>
+function toggleWishlist(productId) {
+    fetch('<?= BASE_URL ?>index.php?url=Wishlist/toggle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'product_id=' + productId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error === 'unauthorized') {
+            window.location.href = '<?= BASE_URL ?>index.php?url=Auth/login';
+            return;
+        }
+        if (data.status === 'success') {
+            const icon = document.getElementById('wishlist-icon-' + productId);
+            if (data.wishlisted) {
+                icon.className = 'fas text-danger fa-heart fs-5';
+            } else {
+                icon.className = 'far text-secondary fa-heart fs-5';
+            }
+            const counter = document.getElementById('wishlist-counter');
+            if (counter) {
+                counter.innerText = data.count;
+                counter.style.display = data.count > 0 ? 'inline-block' : 'none';
+            }
+        } else {
+            alert(data.message || 'Terjadi kesalahan');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
 <?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

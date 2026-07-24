@@ -32,7 +32,7 @@ class ProductModel extends Model {
         return false;
     }
 
-    public function getProducts($kategori_id = null, $keyword = '') {
+    public function getProducts($kategori_id = null, $keyword = '', $limit = null, $offset = null) {
         $products = [];
         $sql = "SELECT p.id, p.name, p.price, p.image, p.stock, c.nama_kategori AS nama_kategori_produk,
                        p.discount_percent, p.discount_start_date, p.discount_end_date, p.description, p.brand
@@ -63,6 +63,13 @@ class ProductModel extends Model {
         }
         $sql .= " ORDER BY p.created_at DESC";
 
+        if ($limit !== null && $offset !== null) {
+            $sql .= " LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
+            $types .= "ii";
+        }
+
         if ($stmt = $this->db->prepare($sql)) {
             if (!empty($params)) {
                 $stmt->bind_param($types, ...$params);
@@ -73,6 +80,66 @@ class ProductModel extends Model {
                 while ($row = $result->fetch_assoc()) {
                     $products[] = $row;
                 }
+            }
+            $stmt->close();
+        }
+        return $products;
+    }
+
+    public function countProducts($kategori_id = null, $keyword = '') {
+        $sql = "SELECT COUNT(p.id) as total FROM product p LEFT JOIN categories c ON p.id_kategori = c.id_kategori";
+        $conditions = [];
+        $params = [];
+        $types = "";
+
+        if ($kategori_id !== null) {
+            $conditions[] = "p.id_kategori = ?";
+            $params[] = $kategori_id;
+            $types .= "i";
+        }
+
+        if (!empty($keyword)) {
+            $search_like = "%" . $keyword . "%";
+            $conditions[] = "(p.name LIKE ? OR p.description LIKE ? OR p.brand LIKE ? OR c.nama_kategori LIKE ?)";
+            for ($i = 0; $i < 4; $i++) {
+                $params[] = $search_like;
+                $types .= "s";
+            }
+        }
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        if ($stmt = $this->db->prepare($sql)) {
+            if (!empty($params)) {
+                $stmt->bind_param($types, ...$params);
+            }
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                return (int)$row['total'];
+            }
+            $stmt->close();
+        }
+        return 0;
+    }
+
+    public function liveSearch($keyword, $limit = 6) {
+        $products = [];
+        $sql = "SELECT p.id, p.name, p.price, p.image, p.discount_percent 
+                FROM product p 
+                LEFT JOIN categories c ON p.id_kategori = c.id_kategori 
+                WHERE p.name LIKE ? OR c.nama_kategori LIKE ? OR p.brand LIKE ?
+                ORDER BY p.name ASC LIMIT ?";
+                
+        if ($stmt = $this->db->prepare($sql)) {
+            $search_like = "%" . $keyword . "%";
+            $stmt->bind_param("sssi", $search_like, $search_like, $search_like, $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $products[] = $row;
             }
             $stmt->close();
         }
