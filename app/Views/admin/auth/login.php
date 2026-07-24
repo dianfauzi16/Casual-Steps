@@ -1,11 +1,17 @@
 <!DOCTYPE html>
+<!-- 
+    Halaman Login Admin - Casual Steps
+    Berfungsi sebagai antarmuka autentikasi pengguna dengan hak akses Administrator.
+-->
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($page_title) ? htmlspecialchars($page_title) : 'Admin Login'; ?> - Casual Steps</title>
+    <!-- Bootstrap CSS & FontAwesome Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -64,24 +70,30 @@
 
 <div class="login-card">
     <div class="login-header">
+        <!-- Header Panel Admin -->
         <h3 class="mb-0 fw-bold"><i class="fas fa-shield-alt me-2"></i>Admin Panel</h3>
         <p class="text-white-50 small mb-0 mt-1">Casual Steps Management</p>
     </div>
     <div class="login-body">
+        <!-- Menampilkan pesan error jika login gagal -->
         <?php if (isset($_SESSION['login_error'])): ?>
             <div class="alert alert-danger small rounded-3 border-0 bg-danger bg-opacity-10 text-danger px-3 py-2" role="alert">
                 <i class="fas fa-exclamation-circle me-1"></i> <?= htmlspecialchars($_SESSION['login_error']); ?>
             </div>
-            <?php unset($_SESSION['login_error']); ?>
+            <?php unset($_SESSION['login_error']); // Hapus setelah ditampilkan ?>
         <?php endif; ?>
+
+        <!-- Menampilkan pesan informasi/form message umum -->
         <?php if (isset($_SESSION['form_message'])): ?>
             <div class="alert alert-<?= htmlspecialchars($_SESSION['form_message_type']); ?> small rounded-3 border-0 px-3 py-2" role="alert">
                 <?= htmlspecialchars($_SESSION['form_message']); ?>
             </div>
-            <?php unset($_SESSION['form_message'], $_SESSION['form_message_type']); ?>
+            <?php unset($_SESSION['form_message'], $_SESSION['form_message_type']); // Hapus setelah ditampilkan ?>
         <?php endif; ?>
 
+        <!-- Form Login yang mengarah ke controller AdminAuth/processLogin -->
         <form action="<?= BASE_URL ?>index.php?url=AdminAuth/processLogin" method="POST">
+            <!-- Input Username -->
             <div class="mb-3">
                 <label class="form-label text-muted small fw-bold">USERNAME</label>
                 <div class="input-group">
@@ -89,6 +101,7 @@
                     <input type="text" class="form-control border-start-0 ps-0" name="username" required placeholder="Masukkan username">
                 </div>
             </div>
+            <!-- Input Password -->
             <div class="mb-4">
                 <label class="form-label text-muted small fw-bold">PASSWORD</label>
                 <div class="input-group">
@@ -96,6 +109,7 @@
                     <input type="password" class="form-control border-start-0 ps-0" name="password" required placeholder="Masukkan password">
                 </div>
             </div>
+            <!-- Tombol Submit -->
             <div class="d-grid">
                 <button type="submit" class="btn btn-admin">Masuk Sistem</button>
             </div>
@@ -103,6 +117,8 @@
     </div>
 </div>
 
+<!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
