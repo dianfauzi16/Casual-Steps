@@ -14,9 +14,9 @@ class MidtransController extends Controller {
         // Memuat autoload composer untuk menggunakan library Midtrans
         require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
         
-        // Konfigurasi dasar Midtrans
-        \Midtrans\Config::$isProduction = false; // Set true jika sudah di production
-        \Midtrans\Config::$serverKey = 'SB-Mid-server-7rXZtaLcNc8M3I9VZYtj9eoE'; // TODO: Pindahkan ke file .env atau Database untuk keamanan
+        // Konfigurasi dasar Midtrans - ambil dari ENV untuk keamanan
+        \Midtrans\Config::$isProduction = (getenv('MIDTRANS_IS_PRODUCTION') === 'true' || ($_ENV['MIDTRANS_IS_PRODUCTION'] ?? '') === 'true');
+        \Midtrans\Config::$serverKey = getenv('MIDTRANS_SERVER_KEY') ?: ($_ENV['MIDTRANS_SERVER_KEY'] ?? '');
         \Midtrans\Config::$isSanitized = true; // Membersihkan input yang dikirimkan ke Midtrans
         \Midtrans\Config::$is3ds = true; // Mengaktifkan 3D Secure untuk pembayaran kartu kredit
 

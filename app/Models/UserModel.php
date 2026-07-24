@@ -14,10 +14,16 @@ class UserModel extends Model {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
+            
+            $user = null;
             if ($result->num_rows == 1) {
-                return $result->fetch_assoc();
+                $user = $result->fetch_assoc();
             }
             $stmt->close();
+            
+            if ($user) {
+                return $user;
+            }
         }
         return false;
     }
@@ -117,7 +123,12 @@ class UserModel extends Model {
             $stmt->bind_param("s", $token);
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result->num_rows == 1) return $result->fetch_assoc();
+            
+            $data = null;
+            if ($result->num_rows == 1) $data = $result->fetch_assoc();
+            $stmt->close();
+            
+            if ($data) return $data;
         }
         return false;
     }
@@ -154,8 +165,15 @@ class UserModel extends Model {
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
+            
+            $profile = null;
             if ($result->num_rows == 1) {
-                return $result->fetch_assoc();
+                $profile = $result->fetch_assoc();
+            }
+            $stmt->close();
+            
+            if ($profile) {
+                return $profile;
             }
         }
         return false;
@@ -208,8 +226,15 @@ class UserModel extends Model {
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
+            
+            $password = null;
             if ($row = $result->fetch_assoc()) {
-                return $row['password'];
+                $password = $row['password'];
+            }
+            $stmt->close();
+            
+            if ($password) {
+                return $password;
             }
         }
         return false;

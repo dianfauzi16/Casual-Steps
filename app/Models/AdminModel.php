@@ -13,11 +13,18 @@ class AdminModel extends Model {
             $stmt->bind_param("s", $username);
             $stmt->execute();
             $result = $stmt->get_result();
+            
+            $admin = null;
             if ($result->num_rows == 1) {
-                $admin = $result->fetch_assoc();
-                if (password_verify($password, $admin['password'])) {
-                    return $admin;
+                $admin_data = $result->fetch_assoc();
+                if (password_verify($password, $admin_data['password'])) {
+                    $admin = $admin_data;
                 }
+            }
+            $stmt->close();
+            
+            if ($admin) {
+                return $admin;
             }
         }
         return false;

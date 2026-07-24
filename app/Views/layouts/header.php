@@ -178,9 +178,16 @@
                         if (isset($_SESSION['user_id'])) {
                             try {
                                 $db_conn = \App\Core\Database::getInstance()->getConnection();
-                                $res = $db_conn->query("SELECT COUNT(*) as cnt FROM wishlists WHERE user_id = " . (int)$_SESSION['user_id']);
-                                if ($res && $row = $res->fetch_assoc()) {
-                                    $wishlist_count = (int)$row['cnt'];
+                                $wl_user_id = (int)$_SESSION['user_id'];
+                                $wl_stmt = $db_conn->prepare("SELECT COUNT(*) as cnt FROM wishlists WHERE user_id = ?");
+                                if ($wl_stmt) {
+                                    $wl_stmt->bind_param("i", $wl_user_id);
+                                    $wl_stmt->execute();
+                                    $wl_result = $wl_stmt->get_result();
+                                    if ($wl_row = $wl_result->fetch_assoc()) {
+                                        $wishlist_count = (int)$wl_row['cnt'];
+                                    }
+                                    $wl_stmt->close();
                                 }
                             } catch (\Exception $e) { }
                         }

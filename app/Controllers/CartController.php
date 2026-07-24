@@ -123,8 +123,8 @@ class CartController extends Controller {
 
     public function remove() {
         if (isset($_GET['cart_item_key'])) {
-            $cart_item_key = $_GET['cart_item_key'];
-            if (isset($_SESSION['keranjang'][$cart_item_key])) {
+            $cart_item_key = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['cart_item_key']);
+            if (!empty($cart_item_key) && isset($_SESSION['keranjang'][$cart_item_key])) {
                 unset($_SESSION['keranjang'][$cart_item_key]);
             }
         }

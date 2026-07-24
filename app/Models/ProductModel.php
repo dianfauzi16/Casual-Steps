@@ -24,10 +24,11 @@ class ProductModel extends Model {
             $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($row = $result->fetch_assoc()) {
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            if ($row) {
                 return $row;
             }
-            $stmt->close();
         }
         return false;
     }
@@ -117,10 +118,11 @@ class ProductModel extends Model {
             }
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($row = $result->fetch_assoc()) {
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            if ($row) {
                 return (int)$row['total'];
             }
-            $stmt->close();
         }
         return 0;
     }
@@ -155,10 +157,11 @@ class ProductModel extends Model {
             $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result->num_rows == 1) {
-                return $result->fetch_assoc();
-            }
+            $row = ($result->num_rows == 1) ? $result->fetch_assoc() : null;
             $stmt->close();
+            if ($row) {
+                return $row;
+            }
         }
         return false;
     }

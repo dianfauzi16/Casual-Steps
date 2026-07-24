@@ -84,10 +84,11 @@ class WishlistModel extends Model {
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($row = $result->fetch_assoc()) {
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            if ($row) {
                 return (int)$row['count'];
             }
-            $stmt->close();
         }
         return 0;
     }
