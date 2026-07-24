@@ -50,7 +50,8 @@
                                     <?php
                                     $image_name_cart = htmlspecialchars($item['image'] ?? '');
                                     $is_url_cart = filter_var($image_name_cart, FILTER_VALIDATE_URL);
-                                    $image_url_cart = $is_url_cart ? $image_name_cart : BASE_URL . "admin/uploads/produk/" . $image_name_cart;
+                                    // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                                    $image_url_cart = $is_url_cart ? \App\Core\CloudinaryHelper::optimizeUrl($image_name_cart) : BASE_URL . "admin/uploads/produk/" . $image_name_cart;
                                     $placeholder_url_cart = BASE_URL . "admin/placeholder_image.png";
 
                                     if (!empty($image_name_cart)): ?>

@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_mysql \
         gd \
         zip \
+        opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------
 RUN a2dismod mpm_event mpm_worker || true \
     && a2enmod mpm_prefork \
-    && a2enmod rewrite headers
+    && a2enmod rewrite headers deflate expires
 
 # -----------------------------------------------------------
 # 3. Konfigurasi Apache — Document Root di /var/www/html
@@ -57,7 +58,14 @@ memory_limit = 256M\n\
 max_execution_time = 120\n\
 display_errors = Off\n\
 log_errors = On\n\
-error_log = /dev/stderr" > "$PHP_INI_DIR/conf.d/custom.ini"
+error_log = /dev/stderr\n\
+; --- OPcache Configuration ---\n\
+opcache.enable = 1\n\
+opcache.memory_consumption = 128\n\
+opcache.interned_strings_buffer = 8\n\
+opcache.max_accelerated_files = 4000\n\
+opcache.revalidate_freq = 60\n\
+opcache.fast_shutdown = 1" > "$PHP_INI_DIR/conf.d/custom.ini"
 
 # -----------------------------------------------------------
 # 5. Install Composer

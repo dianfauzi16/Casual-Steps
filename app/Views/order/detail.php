@@ -154,7 +154,8 @@
                                         <?php
                                         $image_name_item = htmlspecialchars($item['gambar_produk_terkini'] ?? '');
                                         $is_url_item = filter_var($image_name_item, FILTER_VALIDATE_URL);
-                                        $image_url_item = $is_url_item ? $image_name_item : BASE_URL . "admin/uploads/produk/" . $image_name_item;
+                                        // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                                        $image_url_item = $is_url_item ? \App\Core\CloudinaryHelper::optimizeUrl($image_name_item) : BASE_URL . "admin/uploads/produk/" . $image_name_item;
                                         $placeholder_url_item = BASE_URL . "admin/placeholder_image.png";
                                         ?>
                                         <div class="rounded-3 overflow-hidden shadow-sm border" style="width: 60px; height: 60px;">

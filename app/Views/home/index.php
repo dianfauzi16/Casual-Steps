@@ -122,8 +122,10 @@ $brand_logos = [
                         <?php
                         $image_name_best = htmlspecialchars($product['image'] ?? '');
                         $is_url_best = filter_var($image_name_best, FILTER_VALIDATE_URL);
-                        $image_url_best = $is_url_best ? $image_name_best : BASE_URL . "admin/uploads/produk/" . $image_name_best;
+                        // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                        $image_url_best = $is_url_best ? \App\Core\CloudinaryHelper::optimizeUrl($image_name_best) : BASE_URL . "admin/uploads/produk/" . $image_name_best;
                         $placeholder_url_best = BASE_URL . "admin/placeholder_image.png";
+
                         ?>
                         <div style="overflow: hidden;">
                             <img src="<?= !empty($image_name_best) ? $image_url_best : $placeholder_url_best; ?>" alt="<?= htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
@@ -227,8 +229,10 @@ $brand_logos = [
                     <?php
                     $image_name = htmlspecialchars($product['image'] ?? '');
                     $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
-                    $image_url = $is_url ? $image_name : BASE_URL . "admin/uploads/produk/" . $image_name;
+                    // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                    $image_url = $is_url ? \App\Core\CloudinaryHelper::optimizeUrl($image_name) : BASE_URL . "admin/uploads/produk/" . $image_name;
                     $placeholder_url = BASE_URL . "admin/placeholder_image.png";
+
                     ?>
                     <div style="overflow: hidden;">
                         <img src="<?= !empty($image_name) ? $image_url : $placeholder_url; ?>" alt="<?= htmlspecialchars($product['name']); ?>" class="card-img-top" style="aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">

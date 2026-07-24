@@ -31,4 +31,75 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+</IfModule>
+
+# ===========================================
+# OPTIMASI PERFORMA 1: Kompresi GZIP
+# Mengompres respons teks sebelum dikirim ke browser
+# agar ukuran data yang ditransfer lebih kecil.
+# ===========================================
+<IfModule mod_deflate.c>
+    # Aktifkan kompresi untuk tipe konten berikut
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+
+    # Jangan kompres file yang sudah dikompres (gambar, dll.)
+    SetEnvIfNoCase Request_URI \
+        \.(?:gif|jpe?g|png|webp|zip|gz)$ no-gzip dont-vary
+</IfModule>
+
+# ===========================================
+# OPTIMASI PERFORMA 2: Browser Caching
+# Memberitahu browser berapa lama menyimpan file
+# statis secara lokal agar tidak diunduh ulang setiap saat.
+# ===========================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Default: cache 1 minggu
+    ExpiresDefault "access plus 1 week"
+
+    # Gambar: cache 1 bulan (jarang berubah)
+    ExpiresByType image/jpeg   "access plus 1 month"
+    ExpiresByType image/png    "access plus 1 month"
+    ExpiresByType image/gif    "access plus 1 month"
+    ExpiresByType image/webp   "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+
+    # CSS & JavaScript: cache 1 minggu
+    ExpiresByType text/css                  "access plus 1 week"
+    ExpiresByType application/javascript    "access plus 1 week"
+    ExpiresByType text/javascript           "access plus 1 week"
+
+    # HTML & PHP: jangan di-cache (konten dinamis)
+    ExpiresByType text/html "access plus 0 seconds"
+
+    # Font: cache 1 bulan
+    ExpiresByType font/woff2 "access plus 1 month"
+    ExpiresByType font/woff  "access plus 1 month"
+</IfModule>
+
+# ===========================================
+# OPTIMASI PERFORMA 3: Header Cache-Control
+# Menambahkan header Cache-Control untuk kontrol
+# cache yang lebih detail di sisi browser.
+# ===========================================
+<IfModule mod_headers.c>
+    # Tambahkan header Vary: Accept-Encoding agar proxy/CDN
+    # menyimpan versi terkompresi & tidak terkompresi secara terpisah
+    <FilesMatch "\.(css|js|html|htm|php)$">
+        Header append Vary: Accept-Encoding
+    </FilesMatch>
+
+    # Hilangkan header X-Powered-By untuk keamanan (menyembunyikan versi PHP)
+    Header unset X-Powered-By
 </IfModule>

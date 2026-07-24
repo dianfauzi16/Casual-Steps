@@ -59,7 +59,8 @@
                                 echo '<span class="badge sale-badge"><i class="fas fa-bolt me-1"></i> ' . htmlspecialchars($product['discount_percent']) . '% OFF</span>';
                                 $image_name = htmlspecialchars($product['image'] ?? '');
                                 $is_url = filter_var($image_name, FILTER_VALIDATE_URL);
-                                $image_url = $is_url ? $image_name : BASE_URL . "admin/uploads/produk/" . $image_name;
+                                // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                                $image_url = $is_url ? \App\Core\CloudinaryHelper::optimizeUrl($image_name) : BASE_URL . "admin/uploads/produk/" . $image_name;
                                 $placeholder_url = BASE_URL . "admin/placeholder_image.png";
                                 ?>
                                 <img src="<?= !empty($image_name) ? $image_url : $placeholder_url; ?>" alt="<?= htmlspecialchars($product['name']); ?>" class="card-img-top">

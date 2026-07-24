@@ -87,7 +87,8 @@
                                     <?php
                                     $image_name_checkout = htmlspecialchars($item['image'] ?? '');
                                     $is_url_checkout = filter_var($image_name_checkout, FILTER_VALIDATE_URL);
-                                    $image_url_checkout = $is_url_checkout ? $image_name_checkout : BASE_URL . "admin/uploads/produk/" . $image_name_checkout;
+                                    // Jika URL Cloudinary, optimalkan dengan q_auto,f_auto
+                                    $image_url_checkout = $is_url_checkout ? \App\Core\CloudinaryHelper::optimizeUrl($image_name_checkout) : BASE_URL . "admin/uploads/produk/" . $image_name_checkout;
                                     $placeholder_url_checkout = BASE_URL . "admin/placeholder_image.png";
                                     ?>
                                     <div class="position-relative me-3">

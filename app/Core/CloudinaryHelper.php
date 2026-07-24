@@ -64,4 +64,43 @@ class CloudinaryHelper {
 
         return false;
     }
+
+    /**
+     * Mengoptimasi URL gambar Cloudinary dengan parameter transformasi otomatis.
+     *
+     * Cara kerja:
+     * - q_auto  → Cloudinary otomatis memilih kualitas terbaik (biasanya 70-80%)
+     *             tanpa penurunan kualitas visual yang terlihat.
+     * - f_auto  → Cloudinary otomatis mengubah format ke WebP, AVIF, dll.
+     *             sesuai dukungan browser (sangat hemat bandwidth).
+     *
+     * Contoh:
+     * Input  : https://res.cloudinary.com/demo/image/upload/sample.jpg
+     * Output : https://res.cloudinary.com/demo/image/upload/q_auto,f_auto/sample.jpg
+     *
+     * @param string|null $url URL gambar Cloudinary asli
+     * @return string URL yang sudah dioptimasi, atau string kosong jika URL null/kosong
+     */
+    public static function optimizeUrl(?string $url): string {
+        // Jika URL kosong atau bukan URL Cloudinary, kembalikan apa adanya
+        if (empty($url)) {
+            return '';
+        }
+
+        // Periksa apakah URL ini memang URL Cloudinary
+        if (strpos($url, 'res.cloudinary.com') === false) {
+            return $url;
+        }
+
+        // Pastikan parameter transformasi belum ada agar tidak duplikat
+        if (strpos($url, 'q_auto') !== false || strpos($url, 'f_auto') !== false) {
+            return $url;
+        }
+
+        // Sisipkan parameter 'q_auto,f_auto' setelah '/upload/'
+        // Ini adalah titik penyisipan standar transformasi Cloudinary
+        $optimized = str_replace('/upload/', '/upload/q_auto,f_auto/', $url);
+
+        return $optimized;
+    }
 }
