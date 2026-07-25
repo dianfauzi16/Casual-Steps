@@ -86,83 +86,76 @@ class AdminContactController extends AdminBaseController {
 
             $contactModel = $this->model('ContactModel');
             
+            // Konten email HTML
+            $emailSubject = 'Balasan Pesan Anda dari Casual Steps: ' . $original_subject;
+            $emailBody = 'Halo ' . htmlspecialchars($user_name) . ',<br><br>'
+                . 'Terima kasih telah menghubungi kami. Berikut adalah balasan dari tim Casual Steps:<br><br>'
+                . '---<br>'
+                . '<strong>Pesan Anda Sebelumnya:</strong><br>'
+                . nl2br(htmlspecialchars($original_message)) . '<br>'
+                . '---<br><br>'
+                . '<strong>Balasan dari Admin:</strong><br>'
+                . nl2br(htmlspecialchars($admin_reply)) . '<br><br>'
+                . 'Hormat kami,<br>'
+                . 'Tim Casual Steps';
+
             try {
-                $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
-                $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
+                // Prioritas 1: Resend API (HTTPS) — berjalan di Railway/Cloud
+                require_once __DIR__ . '/../Helpers/ResendMailer.php';
+                if (\App\Helpers\ResendMailer::isAvailable()) {
+                    $resend = new \App\Helpers\ResendMailer();
+                    $result = $resend->send(
+                        $user_email,
+                        $user_name,
+                        $emailSubject,
+                        $emailBody,
+                        null,
+                        'Admin Casual Steps'
+                    );
 
-                if (empty($smtp_user) || empty($smtp_pass)) {
-                    throw new Exception("Kredensial SMTP (SMTP_USER / SMTP_PASS) belum dikonfigurasi di Environment Railway.");
-                }
+                    if (!$result['success']) {
+                        throw new \Exception($result['message']);
+                    }
+                } else {
+                    // Prioritas 2: SMTP langsung — berjalan di localhost/Laragon
+                    $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
+                    $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
 
-                // Require manual PHPMailer files from admin folder
-                require_once __DIR__ . '/../../admin/PHPMailer/Exception.php';
-                require_once __DIR__ . '/../../admin/PHPMailer/PHPMailer.php';
-                require_once __DIR__ . '/../../admin/PHPMailer/SMTP.php';
+                    if (empty($smtp_user) || empty($smtp_pass)) {
+                        throw new \Exception("Kredensial email (RESEND_API_KEY atau SMTP_USER/SMTP_PASS) belum dikonfigurasi.");
+                    }
 
-                $mail = new PHPMailer(true);
-                $mail->isSMTP();
-                
-                $smtp_host = getenv('SMTP_HOST') ?: ($_ENV['SMTP_HOST'] ?? 'smtp.gmail.com');
-                $smtp_port = getenv('SMTP_PORT') ?: ($_ENV['SMTP_PORT'] ?? 465);
-                $smtp_secure = getenv('SMTP_SECURE') ?: ($_ENV['SMTP_SECURE'] ?? 'ssl');
+                    require_once __DIR__ . '/../../admin/PHPMailer/Exception.php';
+                    require_once __DIR__ . '/../../admin/PHPMailer/PHPMailer.php';
+                    require_once __DIR__ . '/../../admin/PHPMailer/SMTP.php';
 
-                $mail->Host = $smtp_host; 
-                $mail->SMTPAuth = true;
-                $mail->Username = $smtp_user; 
-                $mail->Password = $smtp_pass; 
-                
-                if (strtolower($smtp_secure) === 'tls' || $smtp_port == 587) {
+                    $mail = new PHPMailer(true);
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = $smtp_user;
+                    $mail->Password = $smtp_pass;
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port = 587;
-                } else {
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                    $mail->Port = 465;
+                    $mail->Timeout = 15;
+                    $mail->CharSet = 'UTF-8';
+
+                    $mail->setFrom($smtp_user, 'Admin Casual Steps');
+                    $mail->addAddress($user_email, $user_name);
+                    $mail->isHTML(true);
+                    $mail->Subject = $emailSubject;
+                    $mail->Body = $emailBody;
+                    $mail->send();
                 }
-
-                $mail->Timeout = 15;
-                $mail->CharSet = 'UTF-8';
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
-
-                $mail->setFrom($smtp_user, 'Admin Casual Steps');
-                $mail->addAddress($user_email, $user_name);
-                $mail->isHTML(true);
-                $mail->Subject = 'Balasan Pesan Anda dari Casual Steps: ' . $original_subject;
-                $mail->Body    = 'Halo ' . htmlspecialchars($user_name) . ',<br><br>'
-                    . 'Terima kasih telah menghubungi kami. Berikut adalah balasan dari tim Casual Steps:<br><br>'
-                    . '---<br>'
-                    . '<strong>Pesan Anda Sebelumnya:</strong><br>'
-                    . nl2br(htmlspecialchars($original_message)) . '<br>'
-                    . '---<br><br>'
-                    . '<strong>Balasan dari Admin:</strong><br>'
-                    . nl2br(htmlspecialchars($admin_reply)) . '<br><br>'
-                    . 'Hormat kami,<br>'
-                    . 'Tim Casual Steps';
-
-                $mail->AltBody = 'Halo ' . htmlspecialchars($user_name) . ",\n\n"
-                    . "Terima kasih telah menghubungi kami. Berikut adalah balasan dari tim Casual Steps:\n\n"
-                    . "--- Pesan Anda Sebelumnya ---\n"
-                    . htmlspecialchars($original_message) . "\n"
-                    . "--- Balasan dari Admin ---\n"
-                    . htmlspecialchars($admin_reply) . "\n\n"
-                    . "Hormat kami,\n"
-                    . "Tim Casual Steps";
-
-                $mail->send();
                 
                 // Simpan ke database setelah sukses kirim email
                 if ($contactModel->saveReply($id_pesan, $admin_reply)) {
                     $_SESSION['form_message'] = "Balasan berhasil dikirim dan email telah terkirim ke " . htmlspecialchars($user_email) . ".";
                     $_SESSION['form_message_type'] = "success";
                 } else {
-                    throw new Exception("Gagal menyimpan riwayat balasan ke database.");
+                    throw new \Exception("Gagal menyimpan riwayat balasan ke database.");
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $_SESSION['form_message'] = "Gagal mengirim balasan. Error: " . $e->getMessage();
                 $_SESSION['form_message_type'] = "danger";
             }

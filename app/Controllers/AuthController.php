@@ -203,60 +203,62 @@ class AuthController extends Controller {
 
                 if ($userModel->createPasswordResetToken($user['id'], $token, $expires_at)) {
                     
-                    // Include PHPMailer manually (karena di old sistem pakai require_once)
-                    require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/PHPMailer.php';
-                    require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/SMTP.php';
-                    require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/Exception.php';
+                    $reset_link = BASE_URL . 'index.php?url=Auth/resetPassword&token=' . $token;
+                    $emailSubject = 'Reset Password Akun Casual Steps Anda';
+                    $emailBody = "Halo {$user['name']},<br><br>Klik tautan berikut untuk mereset password: <a href='{$reset_link}'>Atur Ulang Password</a><br><br>Berlaku 1 jam.";
 
-                    $mail = new PHPMailer(true);
                     try {
-                        $mail->isSMTP();
-                        
-                        $smtp_host = getenv('SMTP_HOST') ?: ($_ENV['SMTP_HOST'] ?? 'smtp.gmail.com');
-                        $smtp_port = getenv('SMTP_PORT') ?: ($_ENV['SMTP_PORT'] ?? 465);
-                        $smtp_secure = getenv('SMTP_SECURE') ?: ($_ENV['SMTP_SECURE'] ?? 'ssl');
+                        // Prioritas 1: Resend API (HTTPS) — berjalan di Railway/Cloud
+                        require_once dirname(dirname(__DIR__)) . '/app/Helpers/ResendMailer.php';
+                        if (\App\Helpers\ResendMailer::isAvailable()) {
+                            $resend = new \App\Helpers\ResendMailer();
+                            $result = $resend->send(
+                                $email,
+                                $user['name'],
+                                $emailSubject,
+                                $emailBody,
+                                null,
+                                'Casual Steps No-Reply'
+                            );
 
-                        // Load credentials dari .env
-                        $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
-                        $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
+                            if (!$result['success']) {
+                                throw new \Exception($result['message']);
+                            }
 
-                        $mail->Host = $smtp_host; 
-                        $mail->SMTPAuth = true;
-                        $mail->Username = $smtp_user; 
-                        $mail->Password = $smtp_pass; 
-                        
-                        if (strtolower($smtp_secure) === 'tls' || $smtp_port == 587) {
+                            $_SESSION['password_reset_message'] = "Tautan reset password telah dikirimkan ke email Anda.";
+                            $_SESSION['password_reset_message_type'] = "success";
+                        } else {
+                            // Prioritas 2: SMTP langsung — berjalan di localhost/Laragon
+                            require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/PHPMailer.php';
+                            require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/SMTP.php';
+                            require_once dirname(dirname(__DIR__)) . '/admin/PHPMailer/Exception.php';
+
+                            $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
+                            $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
+
+                            $mail = new PHPMailer(true);
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = $smtp_user;
+                            $mail->Password = $smtp_pass;
                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                             $mail->Port = 587;
-                        } else {
-                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                            $mail->Port = 465;
+                            $mail->Timeout = 15;
+                            $mail->CharSet = 'UTF-8';
+
+                            $mail->setFrom($smtp_user ?: 'no-reply@casualsteps.com', 'Casual Steps No-Reply');
+                            $mail->addAddress($email, $user['name']);
+                            $mail->isHTML(true);
+                            $mail->Subject = $emailSubject;
+                            $mail->Body = $emailBody;
+                            $mail->send();
+
+                            $_SESSION['password_reset_message'] = "Tautan reset password telah dikirimkan ke email Anda.";
+                            $_SESSION['password_reset_message_type'] = "success";
                         }
-
-                        $mail->Timeout = 15;
-                        $mail->CharSet = 'UTF-8';
-                        $mail->SMTPOptions = array(
-                            'ssl' => array(
-                                'verify_peer' => false,
-                                'verify_peer_name' => false,
-                                'allow_self_signed' => true
-                            )
-                        );
-
-                        $mail->setFrom($smtp_user ?: 'no-reply@casualsteps.com', 'Casual Steps No-Reply');
-                        $mail->addAddress($email, $user['name']);
-
-                        $reset_link = BASE_URL . 'index.php?url=Auth/resetPassword&token=' . $token;
-
-                        $mail->isHTML(true);
-                        $mail->Subject = 'Reset Password Akun Casual Steps Anda';
-                        $mail->Body    = "Halo {$user['name']},<br><br>Klik tautan berikut untuk mereset password: <a href='{$reset_link}'>Atur Ulang Password</a><br><br>Berlaku 1 jam.";
-
-                        $mail->send();
-                        $_SESSION['password_reset_message'] = "Tautan reset password telah dikirimkan ke email Anda.";
-                        $_SESSION['password_reset_message_type'] = "success";
-                    } catch (Exception $e) {
-                        $_SESSION['password_reset_message'] = "Gagal mengirim email reset password.";
+                    } catch (\Exception $e) {
+                        $_SESSION['password_reset_message'] = "Gagal mengirim email reset password. Error: " . $e->getMessage();
                         $_SESSION['password_reset_message_type'] = "danger";
                     }
                 } else {
