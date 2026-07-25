@@ -131,7 +131,7 @@ class AuthController extends Controller {
                 if ($firebaseCreds) {
                     $factory = (new Factory())->withServiceAccount($firebaseCreds);
                 } else {
-                    $factory = (new Factory())->withServiceAccount(dirname(dirname(__DIR__)) . '/casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json');
+                    $factory = (new Factory())->withServiceAccount(dirname(dirname(__DIR__)) . '/casual-steps-b89cf-firebase-adminsdk-fbsvc-2708db423a.json');
                 }
                 $auth = $factory->createAuth();
                 $verifiedIdToken = $auth->verifyIdToken($idToken);

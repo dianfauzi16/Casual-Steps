@@ -13,11 +13,11 @@
         font-size: 1rem;
         font-weight: 600;
     }
-    .product-card img { aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.5s ease; }
+    .product-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.5s ease; }
     .product-card:hover img { transform: scale(1.08); }
     .product-card { transition: all 0.3s ease; border-radius: 1rem; overflow: hidden; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-    .product-card .product-image-container { position: relative; overflow: hidden; }
+    .product-card .product-image-container { position: relative; overflow: hidden; width: 100%; }
     .sale-badge { position: absolute; top: 15px; left: 15px; background: linear-gradient(45deg, #dc3545, #ff4757); color: white; z-index: 10; font-weight: bold; padding: 5px 12px; border-radius: 20px; box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4); }
 </style>
 
@@ -66,7 +66,7 @@
                             </a>
                         </div>
 
-                        <a href="<?= BASE_URL ?>index.php?url=Product/detail&id=<?= $product['id']; ?>" class="text-decoration-none text-dark d-block h-100 d-flex flex-column">
+                        <a href="<?= BASE_URL ?>index.php?url=Product/detail&id=<?= $product['id']; ?>" class="text-decoration-none text-dark d-block flex-grow-1 d-flex flex-column">
                             <div class="card-body d-flex flex-column p-4">
                                 <h5 class="card-title product-title-truncate mb-2"><?= htmlspecialchars($product['name']); ?></h5>
                                 <?php if (!empty($product['nama_kategori_produk'])): ?>

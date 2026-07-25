@@ -5,7 +5,7 @@
 .env
 .env.*
 *.env
-casual-steps-118-firebase-adminsdk-fbsvc-adf0d10297.json
+*-firebase-adminsdk-*.json
 # File Database Dump
 *.sql
 
