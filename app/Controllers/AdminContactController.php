@@ -87,6 +87,13 @@ class AdminContactController extends AdminBaseController {
             $contactModel = $this->model('ContactModel');
             
             try {
+                $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
+                $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
+
+                if (empty($smtp_user) || empty($smtp_pass)) {
+                    throw new Exception("Kredensial SMTP (SMTP_USER / SMTP_PASS) belum dikonfigurasi di Environment Railway.");
+                }
+
                 // Require manual PHPMailer files from admin folder
                 require_once __DIR__ . '/../../admin/PHPMailer/Exception.php';
                 require_once __DIR__ . '/../../admin/PHPMailer/PHPMailer.php';
@@ -97,13 +104,14 @@ class AdminContactController extends AdminBaseController {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com'; 
                 $mail->SMTPAuth = true;
-                $mail->Username = getenv('SMTP_USER') ?: ''; 
-                $mail->Password = getenv('SMTP_PASS') ?: ''; 
+                $mail->Username = $smtp_user; 
+                $mail->Password = $smtp_pass; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587; 
+                $mail->Timeout = 10; // Mencegah hanging 5 menit jika koneksi terkendala
                 $mail->CharSet = 'UTF-8'; 
 
-                $mail->setFrom('dianfauzi16@students.amikom.ac.id', 'Admin Casual Steps');
+                $mail->setFrom($smtp_user, 'Admin Casual Steps');
                 $mail->addAddress($user_email, $user_name);
                 $mail->isHTML(true);
                 $mail->Subject = 'Balasan Pesan Anda dari Casual Steps: ' . $original_subject;
