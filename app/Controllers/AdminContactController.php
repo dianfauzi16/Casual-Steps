@@ -99,17 +99,35 @@ class AdminContactController extends AdminBaseController {
                 require_once __DIR__ . '/../../admin/PHPMailer/PHPMailer.php';
                 require_once __DIR__ . '/../../admin/PHPMailer/SMTP.php';
 
-                // Gunakan PHPMailer
                 $mail = new PHPMailer(true);
                 $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com'; 
+                
+                $smtp_host = getenv('SMTP_HOST') ?: ($_ENV['SMTP_HOST'] ?? 'smtp.gmail.com');
+                $smtp_port = getenv('SMTP_PORT') ?: ($_ENV['SMTP_PORT'] ?? 465);
+                $smtp_secure = getenv('SMTP_SECURE') ?: ($_ENV['SMTP_SECURE'] ?? 'ssl');
+
+                $mail->Host = $smtp_host; 
                 $mail->SMTPAuth = true;
                 $mail->Username = $smtp_user; 
                 $mail->Password = $smtp_pass; 
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587; 
-                $mail->Timeout = 10; // Mencegah hanging 5 menit jika koneksi terkendala
-                $mail->CharSet = 'UTF-8'; 
+                
+                if (strtolower($smtp_secure) === 'tls' || $smtp_port == 587) {
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                } else {
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port = 465;
+                }
+
+                $mail->Timeout = 15;
+                $mail->CharSet = 'UTF-8';
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
 
                 $mail->setFrom($smtp_user, 'Admin Casual Steps');
                 $mail->addAddress($user_email, $user_name);

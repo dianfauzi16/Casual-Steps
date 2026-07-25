@@ -211,19 +211,39 @@ class AuthController extends Controller {
                     $mail = new PHPMailer(true);
                     try {
                         $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com'; 
-                        $mail->SMTPAuth = true;
                         
-                        // Load credentials dari .env
-                        $smtp_user = getenv('SMTP_USER') ?: '';
-                        $smtp_pass = getenv('SMTP_PASS') ?: '';
+                        $smtp_host = getenv('SMTP_HOST') ?: ($_ENV['SMTP_HOST'] ?? 'smtp.gmail.com');
+                        $smtp_port = getenv('SMTP_PORT') ?: ($_ENV['SMTP_PORT'] ?? 465);
+                        $smtp_secure = getenv('SMTP_SECURE') ?: ($_ENV['SMTP_SECURE'] ?? 'ssl');
 
+                        // Load credentials dari .env
+                        $smtp_user = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? '');
+                        $smtp_pass = getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? '');
+
+                        $mail->Host = $smtp_host; 
+                        $mail->SMTPAuth = true;
                         $mail->Username = $smtp_user; 
                         $mail->Password = $smtp_pass; 
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                        $mail->Port = 587; 
+                        
+                        if (strtolower($smtp_secure) === 'tls' || $smtp_port == 587) {
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = 587;
+                        } else {
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                            $mail->Port = 465;
+                        }
 
-                        $mail->setFrom('no-reply@casualsteps.com', 'Casual Steps No-Reply');
+                        $mail->Timeout = 15;
+                        $mail->CharSet = 'UTF-8';
+                        $mail->SMTPOptions = array(
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true
+                            )
+                        );
+
+                        $mail->setFrom($smtp_user ?: 'no-reply@casualsteps.com', 'Casual Steps No-Reply');
                         $mail->addAddress($email, $user['name']);
 
                         $reset_link = BASE_URL . 'index.php?url=Auth/resetPassword&token=' . $token;
