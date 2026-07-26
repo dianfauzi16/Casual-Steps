@@ -100,11 +100,11 @@ class AdminContactController extends AdminBaseController {
                 . 'Tim Casual Steps';
 
             try {
-                // Prioritas 1: Resend API (HTTPS) — berjalan di Railway/Cloud
-                require_once __DIR__ . '/../Helpers/ResendMailer.php';
-                if (\App\Helpers\ResendMailer::isAvailable()) {
-                    $resend = new \App\Helpers\ResendMailer();
-                    $result = $resend->send(
+                // Prioritas 1: Brevo API (HTTPS) — berjalan di Railway/Cloud
+                require_once __DIR__ . '/../Helpers/BrevoMailer.php';
+                if (\App\Helpers\BrevoMailer::isAvailable()) {
+                    $brevo = new \App\Helpers\BrevoMailer();
+                    $result = $brevo->send(
                         $user_email,
                         $user_name,
                         $emailSubject,

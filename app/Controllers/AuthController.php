@@ -208,11 +208,11 @@ class AuthController extends Controller {
                     $emailBody = "Halo {$user['name']},<br><br>Klik tautan berikut untuk mereset password: <a href='{$reset_link}'>Atur Ulang Password</a><br><br>Berlaku 1 jam.";
 
                     try {
-                        // Prioritas 1: Resend API (HTTPS) — berjalan di Railway/Cloud
-                        require_once dirname(dirname(__DIR__)) . '/app/Helpers/ResendMailer.php';
-                        if (\App\Helpers\ResendMailer::isAvailable()) {
-                            $resend = new \App\Helpers\ResendMailer();
-                            $result = $resend->send(
+                        // Prioritas 1: Brevo API (HTTPS) — berjalan di Railway/Cloud
+                        require_once dirname(dirname(__DIR__)) . '/app/Helpers/BrevoMailer.php';
+                        if (\App\Helpers\BrevoMailer::isAvailable()) {
+                            $brevo = new \App\Helpers\BrevoMailer();
+                            $result = $brevo->send(
                                 $email,
                                 $user['name'],
                                 $emailSubject,
