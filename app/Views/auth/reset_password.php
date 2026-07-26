@@ -1,10 +1,11 @@
 <?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
 
 <style>
-    .form-card { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 5rem; margin-bottom: 5rem;}
+    .reset-password-wrapper { padding-top: 100px; padding-bottom: 3rem; min-height: 100vh; }
+    .form-card { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 </style>
 
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+<div class="container reset-password-wrapper d-flex align-items-center justify-content-center">
     <div class="col-md-6 col-lg-5 col-xl-4">
         <div class="form-card mx-auto">
             <div class="text-center mb-4">
