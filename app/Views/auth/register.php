@@ -221,7 +221,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire({ icon: 'success', title: 'Registrasi berhasil!', timer: 2000, showConfirmButton: false })
+                        let isExisting = (data.status_type === 'exists');
+                        let titleMsg = isExisting 
+                            ? 'Akun Google ini sudah terdaftar! Mengalihkan ke akun Anda...' 
+                            : 'Registrasi berhasil! Selamat bergabung.';
+                        let iconType = isExisting ? 'info' : 'success';
+
+                        Swal.fire({ icon: iconType, title: titleMsg, timer: 2500, showConfirmButton: false })
                             .then(() => { window.location.href = data.redirect_url || '<?= BASE_URL ?>index.php'; });
                     } else {
                         errorMessageDiv.textContent = data.message || 'Terjadi kesalahan.';

@@ -155,7 +155,8 @@ class AuthController extends Controller {
 
                     echo json_encode([
                         'success' => true, 
-                        'message' => 'Login berhasil.', 
+                        'message' => ($result['status'] === 'new') ? 'Registrasi berhasil.' : 'Akun Google ini sudah terdaftar.', 
+                        'status_type' => $result['status'],
                         'redirect_url' => BASE_URL
                     ]);
                     exit;
